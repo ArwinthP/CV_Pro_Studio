@@ -274,8 +274,6 @@ img{max-width:100%;display:block}
 .row-between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .muted{color:var(--text-2)}
 .muted-3{color:var(--text-3)}
-.spin{animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 .search-wrap{position:relative}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);stroke:var(--text-3);pointer-events:none}
 .search-wrap .input{padding-left:37px}
@@ -299,6 +297,11 @@ img{max-width:100%;display:block}
 .cv-skills-row b{color:#0f172a;font-weight:700;flex-shrink:0;min-width:0}
 .cv-skills-row span{color:#334155}
 .cv-tag{display:inline-block;padding:1.5px 7px;border-radius:4px;background:#f1f5f9;color:#334155;font-size:9.2pt;margin:0 4px 4px 0;font-weight:500}
+/* Result table for GCE O/L & A/L */
+.cv-results{display:grid;grid-template-columns:1fr 1fr;gap:3px 24px;margin-top:3px}
+@media(max-width:500px){.cv-results{grid-template-columns:1fr}}
+.cv-result-row{display:flex;justify-content:space-between;gap:12px;font-size:9.9pt;color:#334155;padding:1.5px 0;border-bottom:1px dotted #e2e8f0}
+.cv-result-row b{color:#0f172a;font-weight:700;flex-shrink:0}
 .cv-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px}
 .cv-photo{width:23mm;height:23mm;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--cv-accent)}
 .cv-name{font-size:21pt;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:#0f172a;margin:0}
@@ -362,14 +365,25 @@ img{max-width:100%;display:block}
 .tpl-academic .cv-entry-date{display:block;font-style:italic;color:#4b5563;margin-top:1px}
 .tpl-academic li::before{background:#4b5563;border-radius:0;width:3px;height:3px}
 .tpl-academic .cv-tag{background:transparent;border:1px solid #d1d5db;color:#374151;border-radius:2px}
+/* Education substep UI */
+.edu-block{border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px;margin-bottom:16px;background:var(--surface)}
+.edu-block-title{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.edu-block-title .edu-badge{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:5px;background:var(--accent-soft);color:var(--accent-2);border:1px solid var(--accent-border)}
+.edu-block-title .edu-badge.optional{background:var(--surface-3);color:var(--text-3);border-color:var(--border)}
+.result-row{display:grid;grid-template-columns:1fr 110px 34px;gap:8px;margin-bottom:8px;align-items:center}
+@media(max-width:620px){.result-row{grid-template-columns:1fr 90px 34px}}
+.result-row .input,.result-row .select{font-size:13px;padding:7px 10px}
+.result-row .btn-remove{width:34px;height:34px;display:grid;place-items:center;border-radius:8px;color:var(--text-3);background:transparent;border:1px solid transparent;transition:.15s}
+.result-row .btn-remove:hover{background:var(--danger-soft);color:var(--danger);border-color:#fecdca}
+.result-header{display:grid;grid-template-columns:1fr 110px 34px;gap:8px;margin-bottom:6px;padding:0 2px}
+@media(max-width:620px){.result-header{grid-template-columns:1fr 90px 34px}}
+.result-header span{font-size:11.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
 @media print{
   @page{size:A4;margin:0}
   html,body{background:#fff!important;margin:0!important;padding:0!important}
   body>*{display:none!important}
   #printRoot{display:block!important}
   #printRoot .cv-page{width:210mm!important;min-height:297mm!important;padding:14mm 15mm!important;box-shadow:none!important;border:none!important;margin:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .tpl-creative .cv-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .tpl-creative .cv-sec-title{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .cv-sec,.cv-entry{break-inside:avoid;page-break-inside:avoid}
   .cv-sec-title{break-after:avoid;page-break-after:avoid}
 }
@@ -531,30 +545,65 @@ function listJoin(a){a=a.filter(Boolean);if(!a.length)return'';if(a.length===1)r
 function hexToRgb01(h){const s=String(h||'#000').replace('#','');const n=parseInt(s.length===3?s.split('').map(c=>c+c).join(''):s,16);return[((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255];}
 
 /* ============================================================
-   JOB CATEGORY DATABASE
+   JOB CATEGORY DATABASE — EXPANDED GLOBAL COVERAGE
    ============================================================ */
 const JOB_DATA={
-  "Information Technology":["Software Engineer","Software Developer","Full Stack Developer","Frontend Developer","Backend Developer","Web Developer","Mobile App Developer","Android Developer","iOS Developer","Flutter Developer","React Developer","Java Developer","Python Developer",".NET Developer","DevOps Engineer","Cloud Engineer","Cloud Architect","System Administrator","Network Engineer","IT Support Specialist","IT Technician","Database Administrator","Data Engineer","Data Analyst","Data Scientist","Machine Learning Engineer","AI Engineer","Cybersecurity Analyst","Cybersecurity Engineer","Information Security Analyst","Ethical Hacker","SOC Analyst","QA Engineer","Software Tester","Automation Tester","UI/UX Designer","Product Designer","Technical Writer","IT Project Manager","Scrum Master","Business Analyst"],
-  "Engineering":["Civil Engineer","Mechanical Engineer","Electrical Engineer","Electronic Engineer","Computer Engineer","Mechatronics Engineer","Biomedical Engineer","Chemical Engineer","Environmental Engineer","Structural Engineer","Quantity Surveyor","Site Engineer","Project Engineer"],
-  "Business & Management":["Business Analyst","Business Development Executive","Business Development Manager","Project Manager","Operations Manager","Operations Executive","Management Assistant","Management Trainee","Office Manager","Administrative Officer","Executive Assistant","Entrepreneur","Product Manager","Program Manager"],
-  "Finance & Accounting":["Accountant","Accounting Assistant","Finance Executive","Finance Manager","Financial Analyst","Banking Officer","Banking Executive","Auditor","Internal Auditor","Tax Consultant","Investment Analyst","Payroll Specialist","Credit Analyst"],
-  "Marketing & Sales":["Marketing Executive","Marketing Manager","Digital Marketing Specialist","Digital Marketing Executive","SEO Specialist","Social Media Manager","Social Media Executive","Content Marketing Specialist","Content Writer","Copywriter","Brand Manager","Sales Executive","Sales Manager","Public Relations Executive"],
-  "Design & Creative":["Graphic Designer","UI Designer","UX Designer","UI/UX Designer","Product Designer","Web Designer","Motion Graphics Designer","Video Editor","Photographer","Illustrator","Art Director","Creative Director","Multimedia Designer"],
-  "Education":["Teacher","Lecturer","Instructor","Tutor","Academic Coordinator","Teaching Assistant","Education Officer","Training Officer","Curriculum Developer","Educational Consultant"],
-  "Healthcare":["Doctor","Medical Officer","Nurse","Nursing Assistant","Pharmacist","Medical Laboratory Technician","Physiotherapist","Radiographer","Healthcare Assistant","Medical Receptionist","Healthcare Administrator","Public Health Officer"],
-  "Science & Research":["Research Assistant","Research Officer","Laboratory Assistant","Laboratory Technician","Scientist","Research Scientist","Data Researcher","Scientific Officer","Environmental Scientist"],
-  "Human Resources":["HR Assistant","HR Executive","HR Manager","Recruitment Executive","Talent Acquisition Specialist","Talent Acquisition Manager","Training and Development Officer","Payroll Officer","Employee Relations Officer"],
-  "Legal":["Legal Assistant","Legal Executive","Lawyer","Attorney","Compliance Officer","Legal Consultant","Paralegal","Corporate Legal Officer"],
-  "Hospitality & Tourism":["Hotel Manager","Front Office Executive","Receptionist","Guest Relations Officer","Hotel Assistant","Travel Consultant","Tour Guide","Tourism Officer","Event Coordinator","Restaurant Manager","Chef","Waiter/Waitress"],
-  "Media & Communication":["Journalist","News Reporter","News Reader","News Anchor","Content Creator","Editor","Video Producer","Media Coordinator","Communications Officer","Public Relations Officer"],
-  "Customer Service":["Customer Service Executive","Customer Support Specialist","Call Center Executive","Customer Success Executive","Client Relationship Executive","Technical Support Executive","Help Desk Specialist"],
-  "Logistics & Supply Chain":["Logistics Executive","Logistics Coordinator","Supply Chain Executive","Supply Chain Analyst","Procurement Officer","Purchasing Officer","Warehouse Manager","Inventory Controller","Transport Coordinator"],
-  "Government & Public Sector":["Administrative Officer","Development Officer","Management Assistant","Project Officer","Program Officer","Research Officer","ICT Officer","Technical Officer","Planning Officer"],
-  "Construction":["Site Supervisor","Site Engineer","Quantity Surveyor","Construction Manager","Project Engineer","Safety Officer","Construction Coordinator"],
-  "Retail":["Retail Assistant","Sales Assistant","Store Manager","Storekeeper","Inventory Assistant","Retail Executive","Merchandising Executive"],
-  "Humanities & Social Sciences":["Social Worker","Community Development Officer","Research Assistant","Psychologist","Sociologist","Development Officer","Program Coordinator"],
-  "Other / Custom":[]
+  "Information Technology":["Software Engineer","Software Developer","Full Stack Developer","Frontend Developer","Backend Developer","Web Developer","Mobile App Developer","Android Developer","iOS Developer","Flutter Developer","React Developer","React Native Developer","Vue.js Developer","Angular Developer","Node.js Developer","Java Developer","Python Developer","PHP Developer","Ruby Developer","Go Developer","Rust Developer","C++ Developer","C# Developer",".NET Developer","Kotlin Developer","Swift Developer","DevOps Engineer","Site Reliability Engineer","Platform Engineer","Cloud Engineer","Cloud Architect","Cloud Consultant","Solutions Architect","System Administrator","Windows Administrator","Linux Administrator","Network Engineer","Network Administrator","Network Architect","IT Support Specialist","IT Technician","Help Desk Analyst","Service Desk Analyst","Desktop Support Engineer","Database Administrator","Database Developer","Data Engineer","Data Analyst","Data Scientist","Data Architect","Business Intelligence Analyst","BI Developer","Machine Learning Engineer","MLOps Engineer","AI Engineer","AI Researcher","NLP Engineer","Computer Vision Engineer","Deep Learning Engineer","Robotics Engineer","Cybersecurity Analyst","Cybersecurity Engineer","Information Security Analyst","Information Security Manager","Security Architect","Penetration Tester","Ethical Hacker","Red Team Specialist","Blue Team Analyst","SOC Analyst","SOC Manager","Threat Intelligence Analyst","Malware Analyst","Forensics Analyst","Compliance Analyst","GRC Analyst","QA Engineer","QA Manager","Software Tester","Manual Tester","Automation Tester","Performance Tester","SDET","UI/UX Designer","UI Designer","UX Designer","UX Researcher","Interaction Designer","Product Designer","Visual Designer","Web Designer","Technical Writer","API Technical Writer","IT Project Manager","IT Program Manager","Scrum Master","Agile Coach","Product Owner","Engineering Manager","CTO","CIO","IT Director","IT Consultant","ERP Consultant","Salesforce Administrator","Salesforce Developer","SAP Consultant","Oracle Developer","SharePoint Developer","WordPress Developer","Shopify Developer","Magento Developer","Blockchain Developer","Smart Contract Developer","Web3 Developer","Game Developer","Unity Developer","Unreal Engine Developer","AR/VR Developer","Embedded Systems Engineer","Firmware Engineer","IoT Engineer","Microservices Architect","Integration Engineer","Sitecore Developer","Drupal Developer","Joomla Developer","Moodle Developer","QA Automation Architect","IT Auditor","Technology Consultant","Chief Data Officer","Chief Security Officer"],
+  "Engineering":["Civil Engineer","Structural Engineer","Geotechnical Engineer","Transportation Engineer","Water Resources Engineer","Environmental Engineer","Construction Engineer","Site Engineer","Project Engineer","Design Engineer","Mechanical Engineer","HVAC Engineer","Automotive Engineer","Aerospace Engineer","Manufacturing Engineer","Maintenance Engineer","Production Engineer","Quality Engineer","Reliability Engineer","Tooling Engineer","Electrical Engineer","Electronics Engineer","Power Engineer","Control Systems Engineer","Instrumentation Engineer","Telecommunications Engineer","Computer Engineer","Hardware Engineer","Network Hardware Engineer","Mechatronics Engineer","Robotics Engineer","Automation Engineer","Biomedical Engineer","Biotechnology Engineer","Chemical Engineer","Process Engineer","Petroleum Engineer","Mining Engineer","Materials Engineer","Metallurgical Engineer","Agricultural Engineer","Food Engineer","Marine Engineer","Naval Architect","Surveying Engineer","Quantity Surveyor","Cost Engineer","Planning Engineer","Commissioning Engineer","Validation Engineer","Safety Engineer","Fire Protection Engineer","Energy Engineer","Renewable Energy Engineer","Solar Engineer","Wind Energy Engineer","Nuclear Engineer","Systems Engineer","Field Engineer","Service Engineer","Sales Engineer","Applications Engineer","R&D Engineer","Test Engineer","Packaging Engineer","Industrial Engineer","Lean Manufacturing Engineer","Six Sigma Engineer","CAD Engineer","Draftsperson","Technical Sales Engineer","Chief Engineer","Plant Engineer"],
+  "Business & Management":["Business Analyst","Senior Business Analyst","Lead Business Analyst","Business Consultant","Business Development Executive","Business Development Manager","Business Development Director","Project Manager","Senior Project Manager","Program Manager","Portfolio Manager","Project Coordinator","Project Administrator","PMO Analyst","Operations Manager","Operations Executive","Operations Director","Operations Analyst","Management Assistant","Management Trainee","Management Consultant","Office Manager","Office Administrator","Administrative Officer","Administrative Assistant","Executive Assistant","Personal Assistant","Entrepreneur","Startup Founder","Co-Founder","Product Manager","Senior Product Manager","Technical Product Manager","Product Owner","Program Director","Chief Operating Officer","Chief Executive Officer","Chief Strategy Officer","Strategy Manager","Strategy Consultant","Change Manager","Transformation Manager","Process Improvement Manager","Continuous Improvement Manager","General Manager","Branch Manager","Regional Manager","Area Manager","Division Manager","Team Lead","Supervisor","Coordinator","Customer Success Manager","Partnerships Manager","Alliances Manager","Vendor Manager","Contract Manager","Tender Manager","Bid Manager","Proposal Manager","Risk Manager","Compliance Manager","Governance Manager","Business Intelligence Manager","Data Governance Manager"],
+  "Finance & Accounting":["Accountant","Senior Accountant","Staff Accountant","Accounting Assistant","Accounting Clerk","Bookkeeper","Finance Executive","Finance Manager","Finance Director","Chief Financial Officer","Financial Analyst","Senior Financial Analyst","Financial Controller","Financial Advisor","Financial Planner","Financial Consultant","Investment Analyst","Investment Banker","Investment Manager","Portfolio Manager","Asset Manager","Fund Manager","Wealth Manager","Banking Officer","Banking Executive","Bank Teller","Bank Manager","Branch Manager","Relationship Manager","Credit Analyst","Credit Officer","Credit Manager","Loan Officer","Mortgage Advisor","Auditor","Internal Auditor","External Auditor","IT Auditor","Forensic Accountant","Tax Consultant","Tax Advisor","Tax Manager","Tax Preparer","Payroll Specialist","Payroll Officer","Payroll Manager","Accounts Payable Officer","Accounts Receivable Officer","Treasury Analyst","Treasury Manager","Risk Analyst","Quantitative Analyst","Actuary","Insurance Underwriter","Claims Adjuster","Cost Accountant","Management Accountant","Financial Accountant","Forensic Auditor","Compliance Officer","Anti-Money Laundering Analyst","Fund Accountant","Equity Analyst","Fixed Income Analyst","Private Equity Analyst","Venture Capital Analyst","Hedge Fund Analyst","Real Estate Analyst","Mergers & Acquisitions Analyst","Corporate Finance Analyst","CFO","Finance Business Partner"],
+  "Marketing & Sales":["Marketing Executive","Marketing Manager","Marketing Director","Chief Marketing Officer","Digital Marketing Specialist","Digital Marketing Executive","Digital Marketing Manager","Growth Marketer","Performance Marketer","SEO Specialist","SEO Manager","SEM Specialist","PPC Specialist","Paid Media Specialist","Social Media Manager","Social Media Executive","Social Media Coordinator","Community Manager","Influencer Marketing Manager","Content Marketing Specialist","Content Marketing Manager","Content Writer","Content Strategist","Copywriter","Senior Copywriter","Technical Copywriter","UX Writer","Brand Manager","Brand Strategist","Brand Ambassador","Marketing Coordinator","Marketing Analyst","Marketing Automation Specialist","Email Marketing Specialist","CRM Manager","Customer Marketing Manager","Product Marketing Manager","Field Marketing Manager","Event Marketing Manager","Sales Executive","Senior Sales Executive","Sales Manager","Sales Director","VP of Sales","Chief Revenue Officer","Account Executive","Account Manager","Key Account Manager","Business Development Executive","Business Development Manager","Sales Representative","Inside Sales Representative","Outside Sales Representative","Retail Sales Associate","Corporate Sales Executive","Channel Sales Manager","Regional Sales Manager","Territory Sales Manager","Sales Engineer","Sales Operations Analyst","Sales Enablement Manager","Sales Trainer","Public Relations Executive","Public Relations Manager","PR Director","Communications Manager","Media Relations Manager","Advertising Executive","Advertising Manager","Creative Director","Media Planner","Media Buyer","Market Research Analyst","Consumer Insights Analyst","Pricing Analyst","Category Manager","Trade Marketing Manager","Retail Marketing Manager","Promotions Manager","Loyalty Program Manager"],
+  "Design & Creative":["Graphic Designer","Senior Graphic Designer","Visual Designer","UI Designer","UX Designer","UI/UX Designer","Product Designer","Interaction Designer","User Researcher","Design Lead","Design Manager","Design Director","Head of Design","Creative Director","Art Director","Associate Creative Director","Senior Art Director","Copywriter","Senior Copywriter","Creative Strategist","Brand Designer","Identity Designer","Logo Designer","Packaging Designer","Print Designer","Editorial Designer","Publication Designer","Motion Graphics Designer","Motion Designer","Animator","2D Animator","3D Animator","Character Designer","Storyboard Artist","Illustrator","Digital Illustrator","Concept Artist","Environmental Artist","Texture Artist","Web Designer","Webflow Designer","Email Designer","Presentation Designer","Infographic Designer","Data Visualization Designer","Exhibition Designer","Set Designer","Interior Designer","Industrial Designer","Product Design Engineer","Furniture Designer","Jewelry Designer","Fashion Designer","Textile Designer","Footwear Designer","Accessory Designer","Costume Designer","Multimedia Designer","Video Editor","Motion Editor","Colorist","Sound Designer","Photographer","Portrait Photographer","Wedding Photographer","Commercial Photographer","Photojournalist","Photo Retoucher","Photo Editor","Videographer","Cinematographer","Camera Operator","Drone Operator","Gaffer","Lighting Designer","Production Designer"],
+  "Education":["Teacher","Primary School Teacher","Secondary School Teacher","High School Teacher","Preschool Teacher","Kindergarten Teacher","Special Education Teacher","ESL Teacher","TEFL Teacher","Substitute Teacher","Lecturer","Senior Lecturer","Professor","Associate Professor","Assistant Professor","Adjunct Professor","Visiting Professor","Instructor","Training Instructor","Tutor","Private Tutor","Academic Tutor","Academic Coordinator","Academic Advisor","Academic Dean","Department Head","Head of Department","Principal","Vice Principal","School Principal","School Administrator","Teaching Assistant","Graduate Teaching Assistant","Research Assistant","Education Officer","Education Administrator","Education Consultant","Curriculum Developer","Curriculum Designer","Instructional Designer","Learning Designer","E-learning Developer","Training Officer","Training Manager","Learning & Development Manager","Corporate Trainer","Soft Skills Trainer","Technical Trainer","Education Technologist","EdTech Specialist","School Counselor","Career Counselor","Guidance Counselor","Admissions Officer","Registrar","Examination Officer","Assessment Specialist","Literacy Specialist","Reading Specialist","STEM Teacher","Math Teacher","Science Teacher","English Teacher","History Teacher","Geography Teacher","Art Teacher","Music Teacher","PE Teacher","ICT Teacher","Computer Science Teacher","Language Teacher","Montessori Teacher","Waldorf Teacher","Online Tutor","Virtual Teacher"],
+  "Healthcare":["Doctor","General Practitioner","Family Doctor","Physician","Consultant Physician","Surgeon","General Surgeon","Orthopedic Surgeon","Neurosurgeon","Cardiothoracic Surgeon","Plastic Surgeon","Pediatric Surgeon","Medical Officer","Resident Medical Officer","House Officer","Intern Doctor","Specialist Doctor","Cardiologist","Dermatologist","Endocrinologist","Gastroenterologist","Geriatrician","Gynecologist","Hematologist","Hepatologist","Immunologist","Infectious Disease Specialist","Nephrologist","Neurologist","Oncologist","Ophthalmologist","Otolaryngologist","Pathologist","Pediatrician","Psychiatrist","Pulmonologist","Radiologist","Rheumatologist","Urologist","Anesthesiologist","Emergency Physician","Intensivist","Nurse","Registered Nurse","Enrolled Nurse","Practical Nurse","Staff Nurse","Head Nurse","Nurse Practitioner","Nurse Midwife","Midwife","Nursing Assistant","Nurse Educator","Nurse Manager","ICU Nurse","ER Nurse","Pediatric Nurse","Oncology Nurse","Surgical Nurse","Community Health Nurse","School Nurse","Pharmacist","Clinical Pharmacist","Hospital Pharmacist","Community Pharmacist","Pharmacy Technician","Pharmacy Assistant","Medical Laboratory Technician","Medical Laboratory Scientist","Phlebotomist","Pathology Assistant","Radiographer","Radiologic Technologist","MRI Technologist","CT Technologist","Ultrasound Technician","Nuclear Medicine Technologist","Radiation Therapist","Physiotherapist","Physical Therapist","Occupational Therapist","Speech Therapist","Speech-Language Pathologist","Respiratory Therapist","Recreational Therapist","Art Therapist","Music Therapist","Dietitian","Nutritionist","Healthcare Assistant","Nursing Aide","Caregiver","Home Health Aide","Medical Receptionist","Medical Secretary","Healthcare Administrator","Hospital Administrator","Practice Manager","Medical Coder","Medical Biller","Health Information Manager","Public Health Officer","Epidemiologist","Health Inspector","Community Health Worker","Paramedic","Emergency Medical Technician","Ambulance Driver","Dentist","Orthodontist","Dental Surgeon","Dental Hygienist","Dental Assistant","Dental Technician","Optometrist","Optician","Orthoptist","Audiologist","Hearing Aid Specialist","Podiatrist","Chiropractor","Osteopath","Acupuncturist","Naturopath","Homeopath","Veterinary Surgeon","Veterinarian","Veterinary Nurse","Animal Health Technician"],
+  "Science & Research":["Research Assistant","Research Associate","Research Officer","Senior Research Officer","Research Scientist","Principal Scientist","Chief Scientist","Scientist","Lab Scientist","Laboratory Assistant","Laboratory Technician","Laboratory Manager","Medical Laboratory Scientist","Clinical Research Associate","Clinical Research Coordinator","Clinical Trial Manager","Data Researcher","Data Scientist","Quantitative Researcher","Qualitative Researcher","Market Researcher","Social Researcher","Scientific Officer","Field Scientist","Environmental Scientist","Marine Biologist","Wildlife Biologist","Conservation Scientist","Ecologist","Botanist","Zoologist","Microbiologist","Biochemist","Biotechnologist","Geneticist","Molecular Biologist","Cell Biologist","Immunologist","Neuroscientist","Pharmacologist","Toxicologist","Chemist","Analytical Chemist","Organic Chemist","Inorganic Chemist","Physical Chemist","Polymer Scientist","Materials Scientist","Physicist","Astrophysicist","Geophysicist","Meteorologist","Climatologist","Oceanographer","Geologist","Hydrologist","Seismologist","Astronomer","Mathematician","Statistician","Biostatistician","Actuarial Scientist","Operations Research Analyst","Forensic Scientist","Crime Lab Analyst","Food Scientist","Nutrition Scientist","Agricultural Scientist","Soil Scientist","Plant Scientist","Animal Scientist","Postdoctoral Researcher","Fellow","Research Fellow","Senior Research Fellow"],
+  "Human Resources":["HR Assistant","HR Administrator","HR Coordinator","HR Executive","HR Officer","HR Specialist","HR Generalist","HR Business Partner","Senior HR Business Partner","HR Manager","Senior HR Manager","HR Director","Chief People Officer","Chief Human Resources Officer","Recruitment Assistant","Recruitment Coordinator","Recruitment Executive","Recruitment Officer","Recruiter","Senior Recruiter","Technical Recruiter","Executive Recruiter","Headhunter","Talent Acquisition Specialist","Talent Acquisition Manager","Talent Acquisition Director","Talent Sourcer","Talent Manager","Talent Development Manager","Training and Development Officer","Training and Development Manager","Learning and Development Specialist","L&D Manager","Payroll Officer","Payroll Specialist","Payroll Manager","Compensation Analyst","Compensation and Benefits Manager","Benefits Administrator","HRIS Analyst","HRIS Manager","Employee Relations Officer","Employee Relations Manager","Industrial Relations Officer","Labor Relations Specialist","HR Compliance Officer","HR Analytics Specialist","People Analytics Manager","Diversity and Inclusion Manager","Diversity Officer","Organizational Development Specialist","OD Consultant","Change Management Specialist","Performance Management Specialist","Succession Planning Manager","Workforce Planning Analyst","HR Consultant","HR Auditor","Onboarding Specialist","Offboarding Specialist","Employee Engagement Manager","Wellness Coordinator","HR Operations Manager","HR Shared Services Manager"],
+  "Legal":["Legal Assistant","Legal Secretary","Legal Administrator","Legal Executive","Legal Officer","Legal Advisor","Legal Counsel","Senior Legal Counsel","General Counsel","Chief Legal Officer","Lawyer","Solicitor","Barrister","Attorney","Attorney at Law","Advocate","District Attorney","Public Defender","Corporate Lawyer","Corporate Legal Officer","Litigation Lawyer","Criminal Lawyer","Family Lawyer","Immigration Lawyer","Real Estate Lawyer","Intellectual Property Lawyer","Patent Attorney","Trademark Attorney","Tax Lawyer","Labor Lawyer","Environmental Lawyer","Human Rights Lawyer","International Lawyer","Compliance Officer","Compliance Manager","Compliance Director","Chief Compliance Officer","Regulatory Affairs Specialist","Regulatory Affairs Manager","Policy Analyst","Policy Advisor","Policy Manager","Paralegal","Senior Paralegal","Legal Analyst","Legal Researcher","Contract Administrator","Contract Manager","Contract Specialist","Legal Consultant","Legal Operations Manager","Court Clerk","Court Reporter","Judge","Magistrate","Notary Public","Arbitrator","Mediator","Legal Translator","Patent Examiner","IP Paralegal","Immigration Consultant"],
+  "Hospitality & Tourism":["Hotel Manager","General Manager Hotel","Assistant Hotel Manager","Front Office Manager","Front Office Executive","Front Desk Agent","Receptionist","Guest Relations Officer","Guest Relations Manager","Concierge","Bellhop","Doorman","Valet","Housekeeping Manager","Housekeeper","Room Attendant","Laundry Attendant","Hotel Assistant","Resort Manager","Boutique Hotel Manager","Hostel Manager","Bed and Breakfast Owner","Travel Consultant","Travel Agent","Travel Manager","Tour Operator","Tour Guide","Tourism Officer","Tourism Manager","Destination Manager","Events Manager","Event Coordinator","Event Planner","Wedding Planner","Conference Coordinator","Banquet Manager","Catering Manager","Restaurant Manager","Assistant Restaurant Manager","Food and Beverage Manager","F&B Supervisor","Head Waiter","Waiter","Waitress","Barista","Bartender","Mixologist","Sommelier","Chef","Executive Chef","Head Chef","Sous Chef","Pastry Chef","Commis Chef","Line Cook","Prep Cook","Kitchen Helper","Baker","Butcher","Host/Hostess","Cashier","Casino Dealer","Cruise Ship Crew","Cruise Director","Flight Attendant","Cabin Crew","Airline Customer Service Agent","Airport Ground Staff","Rental Car Agent","Spa Manager","Spa Therapist","Massage Therapist","Activities Coordinator","Recreation Manager","Camp Counselor","Ski Instructor","Dive Instructor","Surf Instructor","Yoga Retreat Manager"],
+  "Media & Communication":["Journalist","Senior Journalist","Investigative Journalist","Political Journalist","Sports Journalist","Business Journalist","News Reporter","Field Reporter","Correspondent","Foreign Correspondent","News Reader","News Anchor","TV Presenter","Radio Presenter","Podcast Host","Content Creator","YouTuber","Streamer","Influencer","Blogger","Vlogger","Editor","Senior Editor","Managing Editor","Editor-in-Chief","Copy Editor","News Editor","Features Editor","Sports Editor","Photo Editor","Video Producer","TV Producer","Radio Producer","Film Producer","Executive Producer","Line Producer","Segment Producer","Production Coordinator","Production Assistant","Media Coordinator","Media Planner","Media Buyer","Communications Officer","Communications Manager","Communications Director","Public Relations Officer","Public Relations Manager","PR Account Executive","PR Account Manager","Social Media Coordinator","Digital Content Manager","Broadcast Technician","Sound Engineer","Camera Operator","Floor Manager","Autocue Operator","Scriptwriter","Screenwriter","Playwright","Author","Novelist","Non-fiction Writer","Ghostwriter","Speechwriter","Technical Writer","Grant Writer","Proposal Writer","Sports Commentator","Play-by-play Announcer"],
+  "Customer Service":["Customer Service Executive","Customer Service Representative","Customer Service Officer","Customer Service Manager","Customer Service Director","Customer Support Specialist","Customer Support Representative","Customer Support Agent","Customer Support Manager","Customer Support Lead","Customer Support Engineer","Technical Support Executive","Technical Support Engineer","Technical Support Specialist","Technical Support Analyst","IT Help Desk Specialist","Help Desk Specialist","Help Desk Analyst","Service Desk Agent","Call Center Executive","Call Center Agent","Call Center Manager","Call Center Supervisor","Telemarketing Executive","Telesales Representative","Customer Success Executive","Customer Success Manager","Customer Success Director","Customer Success Associate","Client Relationship Executive","Client Relationship Manager","Account Coordinator","Account Representative","Complaint Resolution Specialist","Escalation Specialist","Live Chat Agent","Email Support Agent","Community Support Manager","Customer Experience Manager","Customer Experience Analyst","Voice of Customer Analyst","Retention Specialist","Loyalty Manager","VIP Support Specialist","Billing Support Agent","Order Support Agent","Returns Specialist","Warranty Administrator","Front Desk Coordinator","Member Services Representative","Patient Services Representative","Guest Services Agent"],
+  "Logistics & Supply Chain":["Logistics Executive","Logistics Coordinator","Logistics Manager","Logistics Director","Logistics Analyst","Supply Chain Executive","Supply Chain Coordinator","Supply Chain Manager","Supply Chain Analyst","Supply Chain Director","VP Supply Chain","Chief Supply Chain Officer","Procurement Officer","Procurement Executive","Procurement Manager","Procurement Director","Purchasing Officer","Purchasing Manager","Purchasing Agent","Buyer","Senior Buyer","Category Buyer","Sourcing Specialist","Strategic Sourcing Manager","Vendor Manager","Supplier Relationship Manager","Warehouse Manager","Warehouse Supervisor","Warehouse Worker","Warehouse Operator","Forklift Operator","Picker","Packer","Order Picker","Inventory Controller","Inventory Manager","Inventory Analyst","Inventory Clerk","Stock Controller","Stock Clerk","Transport Coordinator","Transport Manager","Transport Planner","Fleet Manager","Fleet Coordinator","Dispatcher","Route Planner","Delivery Driver","Courier","Delivery Rider","Truck Driver","LGV Driver","HGV Driver","Shipping Coordinator","Freight Forwarder","Customs Broker","Import/Export Manager","Import Clerk","Export Clerk","Distribution Manager","Distribution Center Manager","Materials Manager","Materials Planner","Demand Planner","Supply Planner","Production Planner","Master Scheduler","Reverse Logistics Manager","Cold Chain Manager","Inventory Auditor","Logistics Consultant"],
+  "Government & Public Sector":["Administrative Officer","Senior Administrative Officer","Development Officer","Senior Development Officer","Management Assistant","Management Officer","Project Officer","Project Coordinator","Program Officer","Program Coordinator","Program Manager","Research Officer","Senior Research Officer","ICT Officer","Senior ICT Officer","Technical Officer","Planning Officer","Planning Director","Policy Officer","Policy Analyst","Policy Advisor","Government Analyst","Civil Servant","Municipal Officer","Urban Planner","Rural Development Officer","Community Development Officer","Social Services Officer","Public Health Officer","Environmental Officer","Customs Officer","Immigration Officer","Tax Officer","Revenue Officer","Excise Officer","Registrar General Officer","Election Officer","Foreign Service Officer","Diplomat","Ambassador","Consul","Immigration Officer","Police Officer","Traffic Officer","Fire Officer","Prison Officer","Probation Officer","Correctional Officer","Court Officer","Court Clerk","Local Government Officer","Council Officer","Parliamentary Officer","Legislative Assistant","Political Advisor","Government Spokesperson","Public Relations Officer Government","Statistician Government","Economist Government","Auditor General Office","Ombudsman Officer","Anti-Corruption Officer","Border Control Officer","Coast Guard Officer","Municipal Engineer","City Manager","Town Clerk"],
+  "Construction":["Site Supervisor","Senior Site Supervisor","Site Engineer","Site Manager","Construction Manager","Senior Construction Manager","Project Manager Construction","Project Engineer","Civil Engineer Construction","Structural Engineer Construction","Quantity Surveyor","Assistant Quantity Surveyor","Cost Estimator","Construction Estimator","Construction Coordinator","Construction Planner","Construction Scheduler","Safety Officer","HSE Officer","HSE Manager","Safety Coordinator","Safety Inspector","Safety Advisor","Site Foreman","General Foreman","Trade Foreman","Carpenter","Senior Carpenter","Joiner","Bricklayer","Mason","Stonemason","Concrete Finisher","Plasterer","Drywall Installer","Tiler","Roofer","Painter","Decorator","Glazier","Steel Fixer","Scaffolder","Pile Driver","Excavator Operator","Crane Operator","Bulldozer Operator","Dump Truck Driver","Concrete Mixer Driver","Welder","Pipe Fitter","Plumber","Electrician","Electrical Technician","HVAC Technician","Refrigeration Technician","Elevator Installer","Insulation Installer","Flooring Installer","Demolition Worker","Labourer","General Labourer","Traffic Controller","Demolition Supervisor","Renovation Specialist","Building Inspector","Building Surveyor","Clerk of Works","Land Surveyor","Geomatics Engineer"],
+  "Retail":["Retail Assistant","Senior Retail Assistant","Sales Assistant","Retail Associate","Retail Executive","Retail Manager","Assistant Store Manager","Store Manager","Area Manager Retail","Regional Manager Retail","District Manager","Retail Director","Storekeeper","Stockroom Assistant","Inventory Assistant","Inventory Manager Retail","Visual Merchandiser","Visual Merchandising Manager","Merchandising Executive","Merchandise Planner","Buyer Retail","Category Manager Retail","Retail Buyer","Cashier","Senior Cashier","Head Cashier","Customer Service Associate","Loss Prevention Officer","Loss Prevention Manager","Security Guard Retail","Sales Associate","Senior Sales Associate","Sales Advisor","Floor Supervisor","Shift Supervisor","Department Manager","Boutique Manager","Showroom Manager","Retail Operations Manager","Retail Analyst","Retail Coordinator","E-commerce Manager","Online Store Manager","E-commerce Specialist","Marketplace Manager","Fulfillment Manager","Personal Shopper","Stylist","Fitting Room Attendant","Greeter","Sample Coordinator","Pop-up Store Manager","Franchise Manager"],
+  "Humanities & Social Sciences":["Social Worker","Senior Social Worker","Clinical Social Worker","Medical Social Worker","School Social Worker","Child Protection Officer","Child Welfare Worker","Community Development Officer","Community Outreach Worker","Community Organizer","Community Health Worker","Research Assistant Social Sciences","Research Officer Social Sciences","Psychologist","Clinical Psychologist","Counseling Psychologist","Educational Psychologist","Organizational Psychologist","Forensic Psychologist","Sports Psychologist","Sociologist","Anthropologist","Archaeologist","Historian","Economist","Political Scientist","Geographer","Demographer","Criminologist","Development Officer","Program Coordinator NGO","Program Manager NGO","Policy Researcher","Urban Sociologist","Rural Development Specialist","Gender Specialist","Human Rights Officer","Refugee Officer","Case Manager","Family Support Worker","Youth Worker","Youth Development Officer","Elderly Care Coordinator","Disability Support Worker","Rehabilitation Counselor","Substance Abuse Counselor","Mental Health Counselor","Marriage and Family Therapist","Art Therapist","Music Therapist","Play Therapist","Crisis Counselor","Hotline Operator","Advocate","Legal Aid Worker","Immigration Caseworker","Housing Officer","Welfare Officer","Benefits Advisor","Social Policy Analyst"],
+  "Sports & Fitness":["Professional Athlete","Semi-professional Athlete","Sports Coach","Head Coach","Assistant Coach","Strength and Conditioning Coach","Fitness Coach","Personal Trainer","Group Fitness Instructor","Yoga Instructor","Pilates Instructor","Zumba Instructor","Spin Instructor","CrossFit Coach","Boxing Coach","Martial Arts Instructor","Swimming Instructor","Tennis Coach","Football Coach","Cricket Coach","Rugby Coach","Basketball Coach","Volleyball Coach","Athletics Coach","Gymnastics Coach","Dance Instructor","Ballet Teacher","Sports Analyst","Sports Commentator","Sports Journalist","Sports Agent","Sports Manager","Sports Administrator","Sports Physiotherapist","Sports Nutritionist","Sports Psychologist","Sports Scientist","Performance Analyst","Video Analyst","Scout","Talent Scout","Referee","Umpire","Match Official","Sports Photographer","Sports Videographer","Sports Statistician","Athletic Director","Sports Development Officer","Recreation Officer","Lifeguard","Pool Manager","Gym Manager","Health Club Manager","Wellness Coach","Health Coach","Nutrition Coach","Massage Therapist Sports"],
+  "Arts & Entertainment":["Actor","Actress","Theater Actor","Voice Actor","Voiceover Artist","Extra","Stunt Performer","Stand-in","Understudy","Director","Theater Director","Film Director","TV Director","Assistant Director","Producer","Executive Producer","Line Producer","Production Manager","Stage Manager","Choreographer","Dance Performer","Ballet Dancer","Contemporary Dancer","Ballroom Dancer","Background Dancer","Singer","Vocalist","Backing Vocalist","Opera Singer","Choir Member","Choir Director","Musician","Instrumentalist","Guitarist","Pianist","Drummer","Violinist","Cellist","Saxophonist","Trumpeter","Flautist","Bassist","Session Musician","Composer","Songwriter","Lyricist","Music Producer","Music Director","Conductor","Arranger","Orchestrator","Sound Engineer","Mixing Engineer","Mastering Engineer","Recording Engineer","Live Sound Engineer","DJ","Music Promoter","Artist Manager","Booking Agent","Talent Agent","Casting Director","Casting Assistant","Entertainment Lawyer","Comedian","Stand-up Comedian","Magician","Illusionist","Circus Performer","Acrobat","Juggler","Puppeteer","Clown","Mime Artist","Drag Performer","Burlesque Performer","Cabaret Performer","Impersonator","Entertainer","MC/Host","Presenter","Ring Announcer"],
+  "Skilled Trades & Crafts":["Carpenter","Cabinetmaker","Furniture Maker","Joiner","Woodworker","Wood Carver","Bricklayer","Mason","Stonemason","Concrete Worker","Plasterer","Drywall Installer","Tiler","Flooring Installer","Roofer","Slater","Thatcher","Painter and Decorator","Paperhanger","Glazier","Window Fitter","Locksmith","Blacksmith","Farrier","Welder","Fabricator","Sheet Metal Worker","Boilermaker","Pipefitter","Steamfitter","Plumber","Heating Engineer","Gas Engineer","Electrician","Domestic Electrician","Industrial Electrician","Solar Panel Installer","Wind Turbine Technician","Elevator Technician","Escalator Technician","HVAC Technician","Refrigeration Engineer","Appliance Repair Technician","Electronics Technician","TV Repair Technician","Computer Repair Technician","Mobile Phone Repair Technician","Auto Electrician","Auto Mechanic","Motorcycle Mechanic","Bicycle Mechanic","Diesel Mechanic","Heavy Vehicle Mechanic","Aircraft Mechanic","Marine Mechanic","Locksmith","Safe Technician","Gunsmith","Tailor","Seamstress","Dressmaker","Upholsterer","Shoe Repairer","Cobbler","Leather Worker","Jeweler","Goldsmith","Silversmith","Watchmaker","Clockmaker","Engraver","Glassblower","Potter","Ceramicist","Weaver","Textile Worker","Embroiderer","Knitter","Crocheter","Quilter","Florist","Cake Decorator","Baker Artisan","Chocolatier","Cheesemaker","Brewer","Distiller","Vintner","Barista Artisan"],
+  "Transportation & Driving":["Taxi Driver","Private Hire Driver","Uber Driver","Lyft Driver","Bolt Driver","Chauffeur","Executive Chauffeur","Limousine Driver","Bus Driver","Coach Driver","School Bus Driver","Shuttle Driver","Tram Driver","Train Driver","Locomotive Engineer","Subway Operator","Truck Driver","LGV Driver","HGV Driver","Long Haul Driver","Delivery Driver","Van Driver","Courier","Motorbike Courier","Bicycle Courier","Food Delivery Rider","Pizza Delivery Driver","Postal Worker","Mail Carrier","Postman","Parcel Sorter","Forklift Driver","Reach Truck Operator","Crane Operator","Heavy Equipment Operator","Excavator Operator","Bulldozer Operator","Tractor Driver","Combine Harvester Operator","Airline Pilot","Commercial Pilot","Private Pilot","Helicopter Pilot","Flight Instructor","First Officer","Captain Airline","Cabin Crew","Flight Attendant","Air Traffic Controller","Flight Dispatcher","Aircraft Loadmaster","Ground Crew","Baggage Handler","Ramp Agent","Fuel Truck Driver","Ship Captain","Ship Officer","Chief Officer","Second Officer","Third Officer","Marine Engineer","Ship Engineer","Deckhand","Able Seaman","Boatswain","Ferry Captain","Tugboat Captain","Fishing Boat Captain","Port Pilot","Harbor Master","Dock Worker","Stevedore","Longshoreman","Tugboat Operator","Barge Operator"],
+  "Agriculture & Farming":["Farmer","Crop Farmer","Vegetable Farmer","Fruit Farmer","Dairy Farmer","Poultry Farmer","Livestock Farmer","Pig Farmer","Sheep Farmer","Goat Farmer","Fish Farmer","Aquaculture Farmer","Shrimp Farmer","Beekeeper","Apiculturist","Vineyard Manager","Wine Grower","Hop Farmer","Tea Plantation Manager","Coffee Farmer","Cocoa Farmer","Rubber Plantation Manager","Coconut Farmer","Palm Oil Plantation Manager","Rice Farmer","Wheat Farmer","Corn Farmer","Soybean Farmer","Sugarcane Farmer","Cotton Farmer","Tobacco Farmer","Floriculturist","Nursery Manager","Greenhouse Manager","Hydroponics Specialist","Vertical Farm Manager","Organic Farm Manager","Permaculture Designer","Farm Manager","Assistant Farm Manager","Farm Supervisor","Farm Worker","Agricultural Labourer","Harvester","Tractor Operator","Irrigation Technician","Soil Scientist","Agronomist","Crop Consultant","Livestock Inspector","Animal Nutritionist","Veterinarian Farm","Farm Equipment Mechanic","Agricultural Engineer","Food Safety Inspector","Seed Technician","Pest Control Advisor","Forester","Forest Ranger","Timber Cruiser","Logger","Arborist","Tree Surgeon","Landscaper","Gardener","Groundskeeper","Horticulturist","Turf Manager","Park Ranger","Wildlife Manager","Conservation Officer","Fisheries Officer","Marine Biologist Fisheries"],
+  "Military & Protective Services":["Soldier","Officer Cadet","Commissioned Officer","Non-Commissioned Officer","Sergeant","Lieutenant","Captain Military","Major","Colonel","General","Navy Sailor","Naval Officer","Marine","Airman","Air Force Officer","Special Forces Operator","Military Intelligence Analyst","Military Engineer","Military Medic","Military Police","Military Pilot","Drone Operator Military","Cyber Warfare Specialist","Police Officer","Police Constable","Detective","Inspector","Chief Inspector","Superintendent","Police Commissioner","Traffic Police","Highway Patrol","SWAT Officer","Tactical Officer","K-9 Handler","Crime Scene Investigator","Forensic Officer","Border Patrol Agent","Customs Officer","Immigration Officer","Coast Guard Officer","Coast Guard Rescue Swimmer","Firefighter","Fire Officer","Fire Chief","Fire Investigator","Fire Safety Officer","Paramedic","Emergency Medical Technician","Emergency Dispatcher","911 Operator","Security Guard","Security Officer","Security Manager","Close Protection Officer","Bodyguard","Bouncer","Door Supervisor","CCTV Operator","Loss Prevention Officer","Armored Car Driver","Prison Officer","Correctional Officer","Probation Officer","Parole Officer","Court Security Officer","Air Marshal","Maritime Security Officer"],
+  "Beauty & Wellness":["Hairdresser","Senior Hairdresser","Master Stylist","Colorist","Hair Colorist","Barber","Master Barber","Beautician","Beauty Therapist","Aesthetician","Makeup Artist","Bridal Makeup Artist","Special Effects Makeup Artist","Nail Technician","Manicurist","Pedicurist","Nail Artist","Lash Technician","Eyelash Extension Specialist","Brow Artist","Microblading Artist","Waxing Specialist","Threading Specialist","Skincare Specialist","Facialist","Massage Therapist","Deep Tissue Massage Therapist","Sports Massage Therapist","Aromatherapist","Reflexologist","Shiatsu Practitioner","Thai Massage Therapist","Spa Therapist","Spa Manager","Wellness Coach","Holistic Health Practitioner","Naturopath","Homeopath","Herbalist","Acupuncturist","Ayurvedic Practitioner","Tattoo Artist","Piercer","Permanent Makeup Artist","Cosmetologist","Electrologist","Laser Technician","Esthetician","Cosmetic Consultant","Beauty Advisor","Fragrance Consultant","Wellness Retreat Manager","Yoga Instructor","Meditation Teacher","Pilates Instructor","Personal Trainer","Nutritionist","Dietitian Wellness","Life Coach","Health Coach","Fitness Coach Wellness","Retreat Coordinator","Sound Healer","Reiki Practitioner"],
+  "Veterinary & Animal Care":["Veterinarian","Veterinary Surgeon","Veterinary Physician","Veterinary Specialist","Equine Veterinarian","Farm Animal Veterinarian","Small Animal Veterinarian","Exotic Animal Veterinarian","Veterinary Nurse","Veterinary Technician","Veterinary Assistant","Veterinary Receptionist","Veterinary Practice Manager","Animal Health Technician","Animal Nutritionist","Animal Behaviorist","Animal Trainer","Dog Trainer","Puppy Trainer","Obedience Trainer","Service Dog Trainer","Police Dog Trainer","Horse Trainer","Racehorse Trainer","Animal Groomer","Pet Groomer","Dog Groomer","Cat Groomer","Pet Sitter","Dog Walker","Pet Boarding Manager","Kennel Manager","Kennel Attendant","Cattery Manager","Animal Shelter Manager","Animal Shelter Worker","Animal Control Officer","Wildlife Rehabilitator","Zookeeper","Senior Zookeeper","Aquarist","Marine Mammal Trainer","Dolphin Trainer","Elephant Keeper","Reptile Keeper","Bird Keeper","Primate Keeper","Aviculturist","Falconer","Animal Welfare Officer","RSPCA Inspector","Wildlife Officer","Conservation Officer","Animal Rescue Worker","Pet Shop Manager","Pet Store Associate","Aquarium Manager","Fish Hatchery Technician","Beekeeper Animal","Insemination Technician","Farrier Animal"],
+  "Aviation & Maritime":["Airline Pilot","Captain Airline","First Officer","Second Officer","Flight Engineer","Commercial Pilot","Private Pilot","Charter Pilot","Cargo Pilot","Bush Pilot","Helicopter Pilot","Air Ambulance Pilot","Fire Fighting Pilot","Agricultural Pilot","Flight Instructor","Simulator Instructor","Check Pilot","Test Pilot","Air Traffic Controller","Approach Controller","Tower Controller","Enroute Controller","Flight Service Specialist","Flight Dispatcher","Aircraft Load Controller","Ramp Controller","Airline Operations Manager","Airport Manager","Airport Operations Officer","Ground Handling Manager","Cabin Crew","Flight Attendant","Purser","Cabin Services Director","Inflight Trainer","Airline Customer Service Agent","Gate Agent","Ticketing Agent","Reservations Agent","Lost Baggage Agent","Air Cargo Agent","Dangerous Goods Officer","Aircraft Maintenance Engineer","Aircraft Technician","Avionics Technician","Aircraft Inspector","Aircraft Painter","Aircraft Cleaner","Ship Captain","Master Mariner","Chief Officer","Second Officer Marine","Third Officer Marine","Deck Cadet","Marine Engineer","Second Engineer","Third Engineer","ETO Electro-Technical Officer","Bosun","Able Seaman","Ordinary Seaman","Deckhand","Marine Electrician","Marine Fitter","Hull Surveyor","Marine Surveyor","Ship Broker","Chartering Manager","Port Captain","Harbor Master","Dockmaster","Stevedore Supervisor","Terminal Manager","Ferry Master","Tug Master","Pilot Boat Operator"],
+  "Real Estate & Property":["Real Estate Agent","Real Estate Broker","Listing Agent","Buyer's Agent","Commercial Real Estate Agent","Residential Real Estate Agent","Luxury Real Estate Agent","Industrial Real Estate Agent","Land Agent","Property Manager","Assistant Property Manager","Property Administrator","Leasing Agent","Leasing Manager","Resident Manager","Building Manager","Facility Manager","Facilities Coordinator","Maintenance Supervisor","Maintenance Technician","Property Developer","Real Estate Developer","Land Developer","Real Estate Investor","Property Investor","REIT Analyst","Real Estate Analyst","Real Estate Appraiser","Property Valuer","Chartered Surveyor","Land Surveyor Property","Estate Surveyor","Quantity Surveyor Property","Urban Planner","Town Planner","Planning Consultant","Property Consultant","Real Estate Consultant","Mortgage Broker","Mortgage Advisor","Real Estate Lawyer","Conveyancer","Title Officer","Escrow Officer","Closing Coordinator","Home Inspector","Building Inspector","Property Inspector","Real Estate Photographer","Real Estate Videographer","Real Estate Marketer","Real Estate Stager","Home Stager","Property Coordinator","Relocation Specialist","Corporate Housing Manager","Vacation Rental Manager","Airbnb Host Manager"],
+  "Insurance":["Insurance Agent","Insurance Broker","Insurance Sales Agent","Life Insurance Agent","Health Insurance Agent","Auto Insurance Agent","Home Insurance Agent","Commercial Insurance Agent","Insurance Underwriter","Senior Underwriter","Life Underwriter","Health Underwriter","Commercial Underwriter","Personal Lines Underwriter","Claims Adjuster","Senior Claims Adjuster","Auto Claims Adjuster","Property Claims Adjuster","Workers Compensation Adjuster","Claims Examiner","Claims Manager","Claims Director","Loss Adjuster","Loss Assessor","Risk Manager Insurance","Risk Analyst","Actuarial Analyst","Actuary","Senior Actuary","Chief Actuary","Insurance Product Manager","Insurance Operations Manager","Insurance Customer Service Representative","Insurance Policy Administrator","Insurance Clerk","Insurance Auditor","Insurance Compliance Officer","Insurance Fraud Investigator","Reinsurance Analyst","Reinsurance Broker","Insurance Consultant","Insurance Trainer","Insurance Examiner","Insurance Investigator","Insurance Medical Examiner","Insurance Claims Investigator","Insurance Appraiser","Insurance Recovery Specialist","Insurance Billing Specialist"],
+  "Consulting & Strategy":["Management Consultant","Senior Consultant","Principal Consultant","Engagement Manager","Associate Partner","Partner","Director Consulting","Strategy Consultant","Strategy Manager","Business Consultant","Business Advisor","Operations Consultant","Process Consultant","Change Management Consultant","HR Consultant","IT Consultant","Technology Consultant","Digital Transformation Consultant","Data Consultant","Analytics Consultant","Marketing Consultant","Sales Consultant","Financial Consultant","Risk Consultant","Compliance Consultant","Sustainability Consultant","Environmental Consultant","Engineering Consultant","Construction Consultant","Healthcare Consultant","Education Consultant","Legal Consultant","Tax Consultant","Audit Consultant","Lean Consultant","Six Sigma Consultant","Continuous Improvement Consultant","Agile Consultant","Scrum Consultant","DevOps Consultant","Cloud Consultant","Security Consultant","Cybersecurity Consultant","ERP Consultant","CRM Consultant","Salesforce Consultant","SAP Consultant","Oracle Consultant","Workday Consultant","SuccessFactors Consultant","Organizational Development Consultant","Diversity Consultant","Executive Coach","Business Coach","Leadership Coach","Career Coach","Life Coach Consulting","Public Sector Consultant","Non-profit Consultant"],
+  "Non-profit & NGO":["Executive Director NGO","Program Director NGO","Country Director","Regional Director NGO","Program Manager NGO","Project Manager NGO","Program Officer","Project Officer","Field Officer","Field Coordinator","Program Coordinator","Project Coordinator","Volunteer Coordinator","Volunteer Manager","Community Mobilizer","Community Organizer","Community Development Officer","Social Worker NGO","Case Worker","Humanitarian Worker","Relief Worker","Emergency Response Officer","Disaster Response Coordinator","Fundraising Officer","Fundraising Manager","Development Officer Fundraising","Grant Writer","Grant Manager","Donor Relations Officer","Donor Relations Manager","Partnership Manager NGO","Advocacy Officer","Policy Officer NGO","Campaign Manager NGO","Communications Officer NGO","Media Officer NGO","Human Rights Officer","Women's Rights Officer","Child Protection Officer","Gender Advisor","M&E Officer","Monitoring and Evaluation Officer","M&E Manager","Research Officer NGO","Data Officer NGO","Finance Officer NGO","Admin Officer NGO","Logistics Officer NGO","Supply Chain Officer NGO","Health Program Officer","Education Program Officer","WASH Officer","Food Security Officer","Livelihoods Officer","Shelter Officer","Protection Officer","Peacebuilding Officer","Capacity Building Officer"],
+  "Music & Audio":["Musician","Session Musician","Recording Artist","Singer","Songwriter","Composer","Arranger","Orchestrator","Music Producer","Beat Maker","Audio Engineer","Recording Engineer","Mixing Engineer","Mastering Engineer","Live Sound Engineer","FOH Engineer","Monitor Engineer","Studio Manager","Studio Assistant","Music Director","Band Leader","Conductor","Choir Director","Music Teacher","Music Therapist","Instrument Repair Technician","Piano Tuner","Luthier","Music Journalist","Music Critic","Music Blogger","Music Publicist","Artist Manager","Tour Manager","Booking Agent","Music Promoter","Concert Promoter","Festival Organizer","Music Supervisor","Music Editor","Sound Designer","Foley Artist","Dialogue Editor","ADR Editor","Podcast Producer","Podcast Editor","Radio Producer","Radio DJ","Radio Presenter","Voiceover Artist","Narrator","Audiobook Narrator","Jingle Writer","Commercial Composer","Film Composer","Game Composer","Library Music Composer"],
+  "Film, TV & Animation":["Film Director","TV Director","Assistant Director","First AD","Second AD","Third AD","Producer","Executive Producer","Line Producer","Co-Producer","Associate Producer","Production Manager","Production Coordinator","Production Assistant","Location Manager","Location Scout","Casting Director","Casting Assistant","Casting Associate","Screenwriter","Script Supervisor","Story Editor","Continuity Supervisor","Director of Photography","Cinematographer","Camera Operator","First AC","Second AC","DIT Digital Imaging Technician","Gaffer","Best Boy Electric","Electrician Film","Key Grip","Grip","Dolly Grip","Sound Mixer","Boom Operator","Sound Designer","Foley Artist","Production Designer","Art Director","Set Decorator","Prop Master","Scenic Artist","Costume Designer","Costume Supervisor","Wardrobe Assistant","Makeup Artist","Hair Stylist","Special Effects Makeup Artist","Editor","Assistant Editor","Colorist","VFX Supervisor","VFX Artist","Compositor","Roto Artist","Matchmove Artist","Animator","2D Animator","3D Animator","Character Animator","Rigging Artist","Storyboard Artist","Concept Artist","Matte Painter","Lighting Artist","Texture Artist","Motion Designer","Title Designer","Producer Animation","Animation Director","Render Wrangler"],
+  "Gaming & Esports":["Game Designer","Senior Game Designer","Lead Designer","Game Director","Creative Director Gaming","Level Designer","Systems Designer","Narrative Designer","Gameplay Designer","Economy Designer","UX Designer Gaming","UI Designer Gaming","Game Artist","2D Artist","3D Artist","Character Artist","Environment Artist","Technical Artist","VFX Artist","Animator Gaming","Rigger","Concept Artist Gaming","Game Programmer","Gameplay Programmer","Engine Programmer","Graphics Programmer","AI Programmer","Tools Programmer","Network Programmer","Game Producer","Associate Producer","Production Coordinator Gaming","QA Tester","Senior QA Tester","QA Lead","Localization QA","Game Writer","Narrative Writer","Community Manager Gaming","Esports Manager","Esports Coach","Esports Player","Professional Gamer","Streamer","Content Creator Gaming","Caster","Shoutcaster","Esports Commentator","Esports Analyst","Tournament Organizer","Tournament Admin","Esports Marketing Manager","Esports Agent","Esports Broadcaster","Game Publisher","Publishing Manager","Live Ops Manager","Monetization Designer","User Acquisition Manager Gaming","Product Manager Gaming"],
+  "Blockchain & Web3":["Blockchain Developer","Smart Contract Developer","Solidity Developer","Rust Developer Blockchain","Web3 Developer","DApp Developer","Blockchain Architect","Blockchain Engineer","Protocol Engineer","Consensus Researcher","Cryptographer","Cryptocurrency Analyst","Crypto Trader","Crypto Fund Manager","Crypto Portfolio Manager","Blockchain Consultant","Blockchain Product Manager","Token Economist","Tokenomics Designer","DeFi Developer","DeFi Analyst","NFT Developer","NFT Artist","NFT Curator","NFT Marketing Manager","Metaverse Developer","Metaverse Designer","DAO Coordinator","DAO Contributor","Community Manager Web3","Developer Relations Web3","Technical Writer Web3","Blockchain Auditor","Smart Contract Auditor","Security Researcher Blockchain","Blockchain Journalist","Crypto Content Creator","Crypto Community Lead","Crypto Marketing Manager","Web3 Growth Manager","Web3 Product Designer","Wallet Developer","Exchange Developer","Crypto Compliance Officer","Crypto Legal Counsel","Crypto Tax Specialist","Mining Engineer Crypto","Node Operator","Validator"],
+  "Robotics & Automation":["Robotics Engineer","Robotics Software Engineer","Robotics Hardware Engineer","Mechatronics Engineer","Automation Engineer","Controls Engineer","Control Systems Engineer","PLC Programmer","SCADA Engineer","HMI Developer","Industrial Robot Programmer","Robot Technician","Robot Operator","Robot Integrator","Automation Technician","Instrumentation Technician","Process Automation Engineer","Building Automation Engineer","Home Automation Specialist","Robotics Researcher","AI Robotics Researcher","Human-Robot Interaction Researcher","Computer Vision Engineer Robotics","Perception Engineer","SLAM Engineer","Motion Planning Engineer","Manipulation Engineer","Autonomous Vehicle Engineer","Self-Driving Engineer","Drone Engineer","UAV Engineer","UAV Pilot","Robotics Product Manager","Robotics UX Designer","RPA Developer","RPA Analyst","RPA Consultant","Process Automation Consultant","Automation Architect","Machine Vision Engineer","Embedded Systems Engineer","Firmware Engineer","Actuator Designer","Sensor Engineer","Servo Engineer","Robotics Sales Engineer","Robotics Support Engineer"],
+  "Biotechnology & Pharma":["Biotechnologist","Molecular Biologist","Cell Biologist","Microbiologist","Geneticist","Genomics Scientist","Proteomics Scientist","Bioinformatician","Computational Biologist","Systems Biologist","Synthetic Biologist","Biochemist","Immunologist","Virologist","Bacteriologist","Pharmacologist","Clinical Pharmacologist","Toxicologist","Pharmaceutical Scientist","Formulation Scientist","Analytical Scientist Pharma","QC Analyst Pharma","QA Analyst Pharma","Regulatory Affairs Specialist Pharma","Regulatory Affairs Manager","Clinical Research Associate","Clinical Research Coordinator","Clinical Trial Manager","Clinical Data Manager","Biostatistician Pharma","Medical Writer","Medical Science Liaison","Medical Affairs Manager","Pharmacovigilance Officer","Drug Safety Officer","Pharmaceutical Sales Representative","Pharmaceutical Sales Manager","Pharmacy Manager","Hospital Pharmacist","Community Pharmacist","Clinical Pharmacist","Oncology Pharmacist","Compounding Pharmacist","Pharmacy Technician","Pharmaceutical Chemist","Process Development Scientist","Upstream Process Scientist","Downstream Process Scientist","Bioprocess Engineer","Validation Engineer Pharma","GMP Specialist","GLP Specialist","Quality Systems Manager","Biomanufacturing Technician"],
+  "Energy & Utilities":["Power Plant Operator","Power Plant Engineer","Power Systems Engineer","Electrical Power Engineer","Grid Engineer","Grid Operator","Transmission Engineer","Distribution Engineer","Substation Engineer","Renewable Energy Engineer","Solar Energy Engineer","Solar Installer","Solar Designer","Wind Energy Engineer","Wind Turbine Technician","Hydroelectric Engineer","Geothermal Engineer","Biomass Engineer","Battery Engineer","Energy Storage Engineer","Energy Analyst","Energy Manager","Energy Consultant","Energy Auditor","Energy Trader","Energy Economist","Oil and Gas Engineer","Petroleum Engineer","Reservoir Engineer","Drilling Engineer","Completion Engineer","Production Engineer Oil","Petroleum Geologist","Geophysicist Oil","Mud Engineer","Well Site Supervisor","Rig Manager","Roughneck","Roustabout","Derrickhand","Oil Rig Worker","Pipeline Engineer","Pipeline Operator","Refinery Operator","Refinery Engineer","Process Engineer Oil","Water Treatment Engineer","Water Treatment Operator","Wastewater Engineer","Wastewater Operator","Utility Manager","Utility Analyst","Utility Technician","Meter Reader","Lineworker","Cable Splicer","Substation Technician"],
+  "Telecommunications":["Telecommunications Engineer","Telecom Network Engineer","Telecom Design Engineer","RF Engineer","Radio Frequency Engineer","Microwave Engineer","Satellite Engineer","Fiber Optic Engineer","Fiber Optic Technician","Fiber Splicer","Telecom Technician","Telecom Installer","Telecom Analyst","Network Planner Telecom","Transmission Engineer Telecom","Core Network Engineer","RAN Engineer","LTE Engineer","5G Engineer","VoIP Engineer","Unified Communications Engineer","Telecom Project Manager","Telecom Consultant","Telecom Sales Engineer","Telecom Account Manager","Telecom Regulatory Analyst","Spectrum Manager","Broadcast Engineer","Broadcast Technician","Antenna Engineer","Antenna Rigger","Tower Climber","Cell Site Technician","Switch Engineer","PBX Technician","Structured Cabling Technician","Cable Installer","Satellite Installer","Satellite Communications Specialist","Radio Operator","Dispatch Operator","NOC Engineer","NOC Technician","Field Service Technician Telecom","Telecom Auditor","Telecom Cost Analyst"],
+  "Fashion & Textiles":["Fashion Designer","Senior Fashion Designer","Head Designer","Creative Director Fashion","Fashion Illustrator","Technical Designer","Pattern Maker","Pattern Cutter","Sample Maker","Sample Cutter","Garment Technologist","Textile Designer","Print Designer","Surface Designer","Knitwear Designer","Woven Designer","Embellishment Designer","Accessory Designer","Footwear Designer","Handbag Designer","Jewelry Designer Fashion","Costume Designer Fashion","Wardrobe Stylist","Personal Stylist","Celebrity Stylist","Fashion Stylist","Editorial Stylist","Fashion Buyer","Assistant Buyer Fashion","Fashion Merchandiser","Visual Merchandiser Fashion","Fashion Marketer","Fashion PR","Fashion Journalist","Fashion Editor","Fashion Blogger","Fashion Influencer","Fashion Photographer","Fashion Model","Runway Model","Fit Model","Fashion Show Producer","Fashion Event Coordinator","Apparel Production Manager","Sourcing Manager Fashion","Garment Factory Manager","Quality Control Fashion","Textile Engineer","Textile Chemist","Textile Technologist","Fabric Technologist","Dyeing Technician","Weaving Technician","Spinning Technician","Tailor Fashion","Dressmaker Fashion","Seamstress Fashion","Embroidery Specialist","Alterations Specialist"],
+  "Architecture & Urban Planning":["Architect","Senior Architect","Principal Architect","Associate Architect","Landscape Architect","Interior Architect","Urban Designer","Urban Planner","Town Planner","Regional Planner","City Planner","Transportation Planner","Environmental Planner","Housing Planner","Community Planner","Urban Renewal Specialist","Heritage Conservation Architect","Restoration Architect","Building Information Modeling Manager","BIM Coordinator","BIM Technician","Architectural Technologist","Architectural Drafter","CAD Technician Architectural","3D Visualizer","Architectural Photographer","Architectural Model Maker","Project Architect","Design Architect","Site Architect","Planning Consultant","Planning Officer","Planning Enforcement Officer","Building Control Officer","Building Inspector","Sustainability Consultant Buildings","Passive House Designer","LEED Consultant","BREEAM Assessor","Energy Modeler","Historic Buildings Inspector"],
+  "Library & Information Science":["Librarian","Senior Librarian","Head Librarian","Chief Librarian","Academic Librarian","Public Librarian","School Librarian","Special Librarian","Law Librarian","Medical Librarian","Music Librarian","Art Librarian","Reference Librarian","Cataloging Librarian","Metadata Librarian","Systems Librarian","Digital Librarian","Electronic Resources Librarian","Outreach Librarian","Youth Services Librarian","Children's Librarian","Teen Librarian","Library Assistant","Library Technician","Library Clerk","Library Page","Shelver","Circulation Assistant","Cataloging Assistant","Acquisitions Assistant","Interlibrary Loan Specialist","Archivist","Senior Archivist","Digital Archivist","Records Manager","Records Analyst","Information Manager","Knowledge Manager","Information Architect","Metadata Specialist","Taxonomist","Indexer","Curator","Museum Curator","Gallery Curator","Collections Manager","Museum Educator","Museum Registrar","Conservator","Conservation Technician","Exhibition Designer","Oral Historian","Documentation Officer"],
+  "Translation & Localization":["Translator","Literary Translator","Legal Translator","Medical Translator","Technical Translator","Financial Translator","Marketing Translator","Subtitle Translator","Conference Interpreter","Simultaneous Interpreter","Consecutive Interpreter","Court Interpreter","Medical Interpreter","Community Interpreter","Sign Language Interpreter","BSL Interpreter","ASL Interpreter","Localization Specialist","Localization Manager","Localization Engineer","Localization QA Tester","Game Localizer","Software Localizer","Website Localizer","Multimedia Localizer","Subtitler","Captioner","Transcriptionist","Proofreader","Copy Editor Translation","Post-editor Machine Translation","Terminologist","Terminology Manager","Language Lead","Language Consultant","Voiceover Translator","Dubbing Artist","Dubbing Director","Subtitling Manager","Project Manager Localization","Vendor Manager Localization","Translation Memory Specialist"],
+  "Religious & Community Services":["Priest","Minister","Pastor","Reverend","Bishop","Archbishop","Cardinal","Pope","Imam","Rabbi","Monk","Nun","Sister","Brother Religious","Chaplain","Hospital Chaplain","Prison Chaplain","Military Chaplain","University Chaplain","Religious Education Teacher","Catechist","Sunday School Teacher","Youth Minister","Worship Leader","Music Minister","Missionary","Church Administrator","Church Secretary","Religious Counselor","Spiritual Director","Spiritual Advisor","Faith-Based Counselor","Community Minister","Outreach Minister","Funeral Director","Funeral Celebrant","Wedding Officiant","Religious Studies Professor","Theologian","Religious Historian","Interfaith Coordinator","Religious Charity Worker","Faith-Based NGO Worker","Temple Administrator","Mosque Administrator","Synagogue Administrator","Religious Community Coordinator","Hospice Chaplain","Elder Care Chaplain"],
+  "Environmental & Sustainability":["Environmental Scientist","Environmental Consultant","Environmental Engineer","Environmental Officer","Environmental Manager","Environmental Analyst","Environmental Planner","Environmental Health Officer","Environmental Health Practitioner","Sustainability Manager","Sustainability Consultant","Sustainability Analyst","Sustainability Officer","ESG Analyst","ESG Manager","Corporate Sustainability Manager","Climate Change Analyst","Climate Scientist","Climate Adaptation Specialist","Carbon Analyst","Carbon Consultant","Carbon Auditor","Energy Manager Sustainability","Waste Management Officer","Waste Management Consultant","Recycling Coordinator","Recycling Manager","Water Quality Analyst","Air Quality Analyst","Soil Scientist Environmental","Ecologist","Conservation Scientist","Conservation Officer","Wildlife Officer","Marine Conservation Officer","Forest Officer","Forest Ranger","Park Ranger Environmental","Environmental Educator","Environmental Journalist","Environmental Lawyer","Environmental Compliance Officer","Environmental Impact Assessor","Environmental Auditor","Biodiversity Officer","Restoration Ecologist","Permaculture Designer Environmental","Renewable Energy Analyst"],
+  "Mining & Natural Resources":["Mining Engineer","Senior Mining Engineer","Mine Manager","Mine Supervisor","Mine Foreman","Mine Surveyor","Mine Geologist","Mining Geologist","Exploration Geologist","Resource Geologist","Hydrogeologist","Geophysicist Mining","Geotechnical Engineer Mining","Rock Mechanics Engineer","Blasting Engineer","Shot Firer","Blast Technician","Drill Operator","Drill Supervisor","Jumbo Operator","Load Haul Dump Operator","Truck Operator Mining","Excavator Operator Mining","Dragline Operator","Underground Miner","Underground Supervisor","Mine Electrician","Mine Mechanic","Mine Fitter","Ventilation Officer","Mine Safety Officer","Mine Rescue Team Member","Processing Plant Operator","Mineral Processing Engineer","Metallurgist","Extractive Metallurgist","Mineralogist","Assay Laboratory Technician","Assay Chemist","Ore Control Geologist","Grade Control Geologist","Mine Planner","Mine Scheduler","Mine Ventilation Engineer","Tailings Engineer","Environmental Mining Officer","Mine Closure Specialist","Quarry Manager","Quarry Operator","Aggregate Technician","Stone Cutter"],
+  "Oil, Gas & Petroleum":["Petroleum Engineer","Reservoir Engineer","Production Engineer Oil","Drilling Engineer","Completion Engineer","Well Engineer","Well Site Supervisor","Drilling Supervisor","Toolpusher","Driller","Assistant Driller","Derrickhand","Motorman","Roustabout","Roughneck","Floorhand","Mud Engineer","Mud Logger","Directional Driller","MWD Engineer","LWD Engineer","Wireline Engineer","Wireline Operator","Coiled Tubing Operator","Frac Engineer","Frac Supervisor","Stimulation Engineer","Production Operator","Lease Operator","Pumper","Pipeline Engineer","Pipeline Operator","Pipeline Inspector","Pipeline Technician","Refinery Operator","Refinery Process Engineer","Refinery Manager","Turnaround Planner","Process Safety Engineer","HSE Advisor Oil","Offshore Installation Manager","Offshore Platform Supervisor","Offshore Crane Operator","Offshore Rigger","Rope Access Technician","Diving Supervisor","Commercial Diver","Saturation Diver","ROV Pilot","ROV Supervisor","Marine Coordinator Oil","Logistics Coordinator Offshore","Helicopter Coordinator","Oil Trader","Oil Analyst","Petroleum Economist","Petroleum Geologist","Petrophysicist"],
+  "Food & Beverage Service":["Chef","Executive Chef","Head Chef","Sous Chef","Chef de Partie","Demi Chef","Commis Chef","Pastry Chef","Pastry Sous Chef","Head Baker","Baker","Artisan Baker","Cake Decorator","Chocolatier","Confectioner","Butcher","Master Butcher","Fishmonger","Deli Counter Assistant","Deli Manager","Restaurant Manager","Assistant Restaurant Manager","F&B Manager","Banquet Manager","Catering Manager","Catering Assistant","Head Waiter","Waiter","Waitress","Runner","Busser","Host/Hostess","Barista","Head Barista","Coffee Roaster","Bartender","Head Bartender","Mixologist","Sommelier","Wine Steward","Cellar Master","Brewer","Head Brewer","Assistant Brewer","Distiller","Whiskey Distiller","Brewery Manager","Cidermaker","Vintner","Winemaker","Vineyard Manager Wine","Cellar Hand","Food Safety Officer","Food Technologist","Food Scientist","Food Quality Manager","Restaurant Owner","Cafe Owner","Food Truck Owner","Catering Business Owner","Food Stylist","Food Photographer","Recipe Developer","Food Writer"],
+  "Childcare & Early Education":["Nursery Nurse","Nursery Assistant","Nursery Manager","Daycare Worker","Daycare Manager","Childcare Assistant","Childcare Worker","Childminder","Nanny","Live-in Nanny","Live-out Nanny","Au Pair","Babysitter","Mother's Helper","Preschool Teacher","Kindergarten Teacher","Early Years Teacher","Early Years Practitioner","Montessori Teacher","Waldorf Teacher","Reggio Emilia Teacher","Reception Teacher","Reception Class Teacher","Teaching Assistant Early Years","Nursery Teacher","Playgroup Leader","Play Worker","Play Therapist","Child Development Specialist","Child Psychologist","Educational Psychologist","Speech and Language Therapist Children","Occupational Therapist Children","Special Needs Assistant","SEN Teaching Assistant","SEN Teacher","Behavior Support Worker","Family Support Worker","Social Worker Children","Child Protection Officer Children","Children's Counselor","Youth Worker Children","Children's Entertainer","Children's Party Host","Children's Sports Coach","Children's Art Teacher","Children's Music Teacher","Children's Dance Teacher","Children's Swim Instructor","Children's Yoga Instructor","Family Daycare Provider","Head Start Teacher","Sure Start Worker"],
+  "Senior Care":["Caregiver","Senior Caregiver","Elderly Caregiver","Home Care Aide","Home Health Aide","Personal Care Assistant","Personal Care Aide","Live-in Carer","Live-out Carer","Companion Carer","Respite Carer","Dementia Care Specialist","Alzheimer's Care Specialist","Hospice Aide","Hospice Nurse","Palliative Care Nurse","Geriatric Nurse","Geriatrician","Geriatric Care Manager","Elder Care Coordinator","Activities Director Senior","Activities Coordinator Senior","Recreation Therapist Senior","Occupational Therapist Senior","Physical Therapist Senior","Speech Therapist Senior","Dietitian Senior","Social Worker Senior","Case Manager Senior","Nursing Home Administrator","Assisted Living Manager","Retirement Community Manager","Senior Center Director","Meals on Wheels Coordinator","Senior Transportation Coordinator","Senior Housing Manager","Elder Law Attorney","Geriatric Care Consultant","Ageing in Place Specialist","Fall Prevention Specialist","Memory Care Director","Certified Nursing Assistant Senior","Resident Assistant Senior"],
+  "Personal Services":["Personal Assistant","Executive Personal Assistant","Celebrity Personal Assistant","Estate Manager","House Manager","Butler","Head Butler","Valet Personal","Housekeeper","Executive Housekeeper","Live-in Housekeeper","Cleaner","Domestic Cleaner","Commercial Cleaner","Deep Clean Specialist","End of Tenancy Cleaner","Carpet Cleaner","Window Cleaner","Oven Cleaner","Laundry Attendant","Dry Cleaner","Ironing Service Worker","Wedding Planner Personal","Event Personal Assistant","Errand Runner","Concierge Personal","Personal Shopper","Stylist Personal","Wardrobe Manager","Estate Groundskeeper","Gardener Personal","Chauffeur Personal","Travel Coordinator Personal","Social Secretary","Bookkeeper Personal","Personal Chef","Private Chef","Private Tutor Personal","Private Nurse","Private Security","Personal Trainer In-home","Massage Therapist In-home","Hair Stylist Mobile","Makeup Artist Mobile","Nail Technician Mobile","Mobile Notary","Mobile Pet Groomer","House Sitter","Pet Sitter Personal"],
+  "Sports Coaching & Instruction":["Sports Coach","Head Coach","Assistant Coach","Technical Coach","Tactical Coach","Strength and Conditioning Coach","S&C Assistant","Fitness Coach","Performance Coach","Speed Coach","Agility Coach","Endurance Coach","Football Coach","Assistant Football Coach","Goalkeeping Coach","Cricket Coach","Batting Coach","Bowling Coach","Fielding Coach","Tennis Coach","Head Tennis Coach","Basketball Coach","Assistant Basketball Coach","Baseball Coach","Softball Coach","Volleyball Coach","Rugby Coach","Hockey Coach","Field Hockey Coach","Ice Hockey Coach","Athletics Coach","Sprint Coach","Distance Coach","Field Events Coach","Gymnastics Coach","Artistic Gymnastics Coach","Rhythmic Gymnastics Coach","Swimming Coach","Head Swim Coach","Diving Coach","Water Polo Coach","Rowing Coach","Canoeing Coach","Kayaking Coach","Sailing Instructor","Windsurfing Instructor","Kitesurfing Instructor","Surfing Instructor","Snowboard Instructor","Ski Instructor","Climbing Instructor","Mountaineering Guide","Cycling Coach","Triathlon Coach","Boxing Coach","Wrestling Coach","Judo Coach","Karate Instructor","Taekwondo Instructor","MMA Coach","Yoga Instructor Sports","Pilates Instructor Sports","Dance Coach","Cheerleading Coach"],
+  "Entertainment & Performance":["Actor","Actress","Stage Actor","Screen Actor","Voice Actor","Voiceover Artist","Stand-up Comedian","Comedy Writer","Improv Performer","Sketch Performer","Magician","Close-up Magician","Stage Magician","Illusionist","Mentalist","Escapologist","Circus Performer","Acrobat","Aerialist","Trapeze Artist","Tightrope Walker","Juggler","Unicyclist","Contortionist","Fire Performer","Poi Spinner","Stilt Walker","Puppeteer","Marionettist","Mime Artist","Clown","Children's Entertainer","Party Entertainer","Character Performer","Mascot Performer","Drag Performer","Drag Queen","Drag King","Burlesque Performer","Cabaret Performer","Singer Performer","Backing Vocalist","Dancer","Ballet Dancer","Contemporary Dancer","Street Dancer","Breakdancer","Ballroom Dancer","Latin Dancer","Salsa Dancer","Swing Dancer","Belly Dancer","Flamenco Dancer","Tap Dancer","Musical Theater Performer","Showgirl","Ring Announcer","MC/Host","Auctioneer","Rodeo Performer","Stunt Performer","Stunt Coordinator"]
 };
+
 const ALL_JOBS=[];
 Object.keys(JOB_DATA).forEach(cat=>JOB_DATA[cat].forEach(t=>{if(!ALL_JOBS.some(j=>j.title===t&&j.category===cat))ALL_JOBS.push({title:t,category:cat});}));
 
@@ -580,9 +629,45 @@ const CATEGORY_FALLBACK={
   "Government & Public Sector":{technical:["Public Administration","Policy Implementation","Report Writing","Data Management","Stakeholder Coordination"],tools:["MS Office","Government Systems","Excel"],soft:["Integrity","Communication","Organization","Public Service","Attention to Detail"],actionVerbs:["Coordinated","Prepared","Implemented","Managed","Documented","Supported","Facilitated"],certifications:["Public Administration","Project Management"]},
   "Construction":{technical:["Site Supervision","Construction Methods","Quality Control","Safety Compliance","Quantity Take-off","Cost Estimation"],tools:["AutoCAD","MS Project","Excel","Surveying Equipment"],soft:["Leadership","Problem Solving","Attention to Detail","Communication"],actionVerbs:["Supervised","Inspected","Coordinated","Estimated","Monitored","Ensured","Managed"],certifications:["NEBOSH","OSHA","PMP"]},
   "Retail":{technical:["Customer Service","Inventory Control","Visual Merchandising","Cash Handling","Sales Reporting"],tools:["POS Systems","Excel","Inventory Software"],soft:["Customer Service","Communication","Reliability","Teamwork","Sales Ability"],actionVerbs:["Assisted","Managed","Processed","Maintained","Achieved","Organized","Supported"],certifications:["Retail Management","Customer Service"]},
-  "Humanities & Social Sciences":{technical:["Case Management","Community Outreach","Program Development","Research Methods","Report Writing"],tools:["MS Office","SPSS","Case Management Software"],soft:["Empathy","Communication","Cultural Sensitivity","Advocacy","Problem Solving"],actionVerbs:["Supported","Coordinated","Assessed","Facilitated","Advocated","Documented","Developed"],certifications:["Social Work License","First Aid"]}
+  "Humanities & Social Sciences":{technical:["Case Management","Community Outreach","Program Development","Research Methods","Report Writing"],tools:["MS Office","SPSS","Case Management Software"],soft:["Empathy","Communication","Cultural Sensitivity","Advocacy","Problem Solving"],actionVerbs:["Supported","Coordinated","Assessed","Facilitated","Advocated","Documented","Developed"],certifications:["Social Work License","First Aid"]},
+  "Sports & Fitness":{technical:["Training Program Design","Athletic Performance","Injury Prevention","Sports Nutrition","Performance Analysis"],tools:["Video Analysis Software","Fitness Apps","Excel"],soft:["Motivation","Communication","Leadership","Patience","Adaptability"],actionVerbs:["Coached","Trained","Developed","Mentored","Analyzed","Motivated","Improved"],certifications:["NSCA-CSCS","NASM-CPT","First Aid","Sports Coaching Level 3"]},
+  "Arts & Entertainment":{technical:["Performance","Rehearsal","Character Development","Improvisation","Stage Presence"],tools:["Script Software","Recording Equipment","Lighting"],soft:["Creativity","Collaboration","Discipline","Resilience","Communication"],actionVerbs:["Performed","Rehearsed","Collaborated","Developed","Presented","Entertained","Trained"],certifications:["Performing Arts Diploma","Acting Certificate"]},
+  "Skilled Trades & Crafts":{technical:["Manual Dexterity","Measurement","Blueprint Reading","Repair Techniques","Tool Usage","Safety Compliance"],tools:["Hand Tools","Power Tools","Measuring Instruments","Safety Equipment"],soft:["Attention to Detail","Patience","Problem Solving","Reliability","Time Management"],actionVerbs:["Built","Assembled","Repaired","Installed","Maintained","Fabricated","Restored"],certifications:["Trade Certification","NVQ","OSHA"]},
+  "Transportation & Driving":{technical:["Vehicle Operation","Route Planning","Load Management","Vehicle Maintenance","Traffic Regulations"],tools:["GPS Systems","Fleet Software","Logbooks"],soft:["Reliability","Punctuality","Attention to Detail","Patience","Safety Awareness"],actionVerbs:["Drove","Delivered","Operated","Maintained","Navigated","Transported","Scheduled"],certifications:["Commercial Driver's License","HGV License","CPC"]},
+  "Agriculture & Farming":{technical:["Crop Management","Livestock Care","Soil Management","Irrigation","Pest Control","Harvesting"],tools:["Farm Equipment","Tractors","Irrigation Systems","Farm Software"],soft:["Physical Stamina","Problem Solving","Patience","Reliability","Attention to Detail"],actionVerbs:["Cultivated","Managed","Harvested","Maintained","Operated","Monitored","Planted"],certifications:["Agricultural Certification","Pesticide License","First Aid"]},
+  "Military & Protective Services":{technical:["Tactical Operations","Physical Fitness","Weapons Handling","Emergency Response","Surveillance","Report Writing"],tools:["Communication Equipment","Surveillance Systems","Weapons","Vehicles"],soft:["Discipline","Integrity","Teamwork","Resilience","Attention to Detail"],actionVerbs:["Served","Led","Protected","Responded","Trained","Monitored","Investigated"],certifications:["Military Training","First Aid","Firearms License"]},
+  "Beauty & Wellness":{technical:["Hair Styling","Makeup Application","Skin Care","Nail Care","Massage Techniques","Client Consultation"],tools:["Salon Equipment","Makeup Kits","Massage Tables","Skincare Products"],soft:["Customer Service","Communication","Creativity","Attention to Detail","Empathy"],actionVerbs:["Styled","Applied","Consulted","Treated","Advised","Maintained","Delivered"],certifications:["Cosmetology License","Massage Therapy License","Makeup Certification"]},
+  "Veterinary & Animal Care":{technical:["Animal Handling","Veterinary Procedures","Animal Nutrition","Behavior Assessment","Emergency Care"],tools:["Veterinary Equipment","Surgical Instruments","Diagnostic Tools"],soft:["Compassion","Patience","Physical Stamina","Attention to Detail","Communication"],actionVerbs:["Treated","Examined","Cared for","Assisted","Monitored","Administered","Rehabilitated"],certifications:["DVM","Veterinary Technician Certification","Animal First Aid"]},
+  "Aviation & Maritime":{technical:["Navigation","Flight Operations","Marine Operations","Safety Procedures","Communication Protocols"],tools:["Navigation Systems","Radar","Communication Equipment","Control Systems"],soft:["Situational Awareness","Decision Making","Calm Under Pressure","Teamwork","Communication"],actionVerbs:["Operated","Navigated","Managed","Coordinated","Monitored","Trained","Maintained"],certifications:["Commercial Pilot License","Master Mariner","STCW"]},
+  "Real Estate & Property":{technical:["Property Valuation","Market Analysis","Client Relations","Negotiation","Contract Management"],tools:["CRM Software","MLS Systems","Excel","Property Management Software"],soft:["Communication","Negotiation","Networking","Attention to Detail","Customer Service"],actionVerbs:["Marketed","Sold","Negotiated","Managed","Valued","Advised","Coordinated"],certifications:["Real Estate License","Property Management Certification"]},
+  "Insurance":{technical:["Risk Assessment","Underwriting","Claims Processing","Policy Administration","Regulatory Compliance"],tools:["Insurance Software","CRM","Excel","Rating Systems"],soft:["Attention to Detail","Analytical Thinking","Communication","Integrity","Customer Service"],actionVerbs:["Assessed","Underwrote","Processed","Advised","Evaluated","Managed","Investigated"],certifications:["Chartered Insurance Institute","CPCU","Insurance License"]},
+  "Consulting & Strategy":{technical:["Business Analysis","Strategic Planning","Process Improvement","Change Management","Data Analysis"],tools:["Excel","PowerPoint","Tableau","Project Management Software"],soft:["Communication","Problem Solving","Analytical Thinking","Client Management","Presentation Skills"],actionVerbs:["Advised","Analyzed","Developed","Implemented","Presented","Facilitated","Led"],certifications:["MBA","PMP","Six Sigma"]},
+  "Non-profit & NGO":{technical:["Program Management","Grant Writing","Community Development","Monitoring and Evaluation","Advocacy"],tools:["MS Office","Program Management Software","Data Collection Tools"],soft:["Empathy","Communication","Cultural Sensitivity","Problem Solving","Advocacy"],actionVerbs:["Coordinated","Implemented","Advocated","Supported","Developed","Facilitated","Evaluated"],certifications:["Project Management","Fundraising Certification","First Aid"]},
+  "Music & Audio":{technical:["Music Composition","Audio Recording","Mixing","Mastering","Live Sound"],tools:["Pro Tools","Logic Pro","Ableton Live","Mixing Consoles","Microphones"],soft:["Creativity","Attention to Detail","Collaboration","Discipline","Time Management"],actionVerbs:["Composed","Recorded","Mixed","Produced","Performed","Arranged","Mastered"],certifications:["Audio Engineering Diploma","Music Production Certificate"]},
+  "Film, TV & Animation":{technical:["Cinematography","Editing","Color Grading","Storyboarding","VFX Compositing"],tools:["Adobe Premiere","DaVinci Resolve","After Effects","Maya","Blender","Final Cut Pro"],soft:["Creativity","Collaboration","Attention to Detail","Time Management","Storytelling"],actionVerbs:["Directed","Edited","Produced","Filmed","Composited","Animated","Color Graded"],certifications:["Film Production Diploma","VFX Certificate"]},
+  "Gaming & Esports":{technical:["Game Design","Level Design","Programming","Game Testing","Player Analytics"],tools:["Unity","Unreal Engine","Blender","Jira","Maya"],soft:["Creativity","Problem Solving","Teamwork","Attention to Detail","Passion for Games"],actionVerbs:["Designed","Developed","Programmed","Tested","Balanced","Iterated","Launched"],certifications:["Game Development Certification","Unity Certification"]},
+  "Blockchain & Web3":{technical:["Smart Contracts","Blockchain Development","Cryptography","Consensus Mechanisms","DeFi Protocols"],tools:["Solidity","Ethereum","Hardhat","Truffle","Web3.js","MetaMask"],soft:["Problem Solving","Analytical Thinking","Attention to Detail","Self-Learning","Collaboration"],actionVerbs:["Developed","Audited","Deployed","Engineered","Researched","Optimized","Integrated"],certifications:["Blockchain Certification","Certified Blockchain Developer"]},
+  "Robotics & Automation":{technical:["Robot Programming","PLC Programming","Control Systems","Computer Vision","Path Planning"],tools:["ROS","MATLAB","Simulink","PLC Software","CAD Software"],soft:["Problem Solving","Analytical Thinking","Attention to Detail","Teamwork","Creativity"],actionVerbs:["Programmed","Engineered","Integrated","Optimized","Designed","Automated","Tested"],certifications:["Robotics Certification","PLC Programming Certificate"]},
+  "Biotechnology & Pharma":{technical:["Molecular Biology Techniques","Cell Culture","PCR","Chromatography","Regulatory Compliance"],tools:["PCR Machines","Microscopes","HPLC","Spectrophotometers","LIMS"],soft:["Attention to Detail","Analytical Thinking","Patience","Communication","Teamwork"],actionVerbs:["Analyzed","Developed","Tested","Validated","Documented","Researched","Optimized"],certifications:["GMP Certification","GLP Certification","Biotechnology Diploma"]},
+  "Energy & Utilities":{technical:["Power Systems","Renewable Energy","Energy Management","Grid Operations","Safety Compliance"],tools:["SCADA","CAD Software","Energy Modeling Software","Excel"],soft:["Problem Solving","Safety Awareness","Attention to Detail","Teamwork","Analytical Thinking"],actionVerbs:["Operated","Maintained","Analyzed","Optimized","Monitored","Designed","Commissioned"],certifications:["NEBOSH","Energy Manager Certification","Electrical License"]},
+  "Telecommunications":{technical:["Network Design","RF Engineering","Fiber Optics","Telecom Protocols","Signal Processing"],tools:["Network Analyzers","Spectrum Analyzers","Fiber Splicing Equipment","CAD Software"],soft:["Problem Solving","Attention to Detail","Analytical Thinking","Communication","Teamwork"],actionVerbs:["Designed","Installed","Configured","Optimized","Maintained","Tested","Troubleshot"],certifications:["CCNA","CCNP","Telecom Certification"]},
+  "Fashion & Textiles":{technical:["Pattern Making","Garment Construction","Textile Knowledge","Fashion Illustration","Trend Analysis"],tools:["Adobe Illustrator","Photoshop","CAD Software","Sewing Machines"],soft:["Creativity","Attention to Detail","Time Management","Communication","Trend Awareness"],actionVerbs:["Designed","Created","Sourced","Produced","Styled","Illustrated","Developed"],certifications:["Fashion Design Diploma","Textile Certification"]},
+  "Architecture & Urban Planning":{technical:["Architectural Design","Urban Planning","Building Codes","Sustainability","Project Management"],tools:["AutoCAD","Revit","SketchUp","GIS","Adobe Creative Suite"],soft:["Creativity","Problem Solving","Communication","Attention to Detail","Collaboration"],actionVerbs:["Designed","Planned","Drafted","Coordinated","Presented","Managed","Visualized"],certifications:["Licensed Architect","Urban Planning Certification","LEED"]},
+  "Library & Information Science":{technical:["Cataloging","Information Retrieval","Metadata","Collection Development","Reference Services"],tools:["Library Management Systems","Digital Repositories","Metadata Standards","Databases"],soft:["Attention to Detail","Customer Service","Organization","Communication","Research Skills"],actionVerbs:["Catalogued","Organized","Assisted","Managed","Curated","Researched","Preserved"],certifications:["MLIS","Library Technician Diploma"]},
+  "Translation & Localization":{technical:["Translation","Localization","Terminology Management","Transcreation","Proofreading"],tools:["CAT Tools","Trados","MemoQ","Phrase"],soft:["Attention to Detail","Cultural Awareness","Communication","Time Management","Research Skills"],actionVerbs:["Translated","Localized","Proofread","Reviewed","Edited","Adapted","Transcribed"],certifications:["Translation Certification","ATA Certification","DipTrans"]},
+  "Religious & Community Services":{technical:["Pastoral Care","Counseling","Community Outreach","Religious Education","Ceremony Leadership"],tools:["MS Office","Religious Texts","Counseling Resources"],soft:["Empathy","Communication","Compassion","Integrity","Patience"],actionVerbs:["Led","Counseled","Organized","Supported","Taught","Facilitated","Comforted"],certifications:["Ordination","Chaplaincy Certification","Counseling Certificate"]},
+  "Environmental & Sustainability":{technical:["Environmental Assessment","Sustainability Strategy","Carbon Footprinting","Waste Management","Environmental Compliance"],tools:["GIS","Environmental Software","Excel","Data Analysis Tools"],soft:["Analytical Thinking","Communication","Problem Solving","Attention to Detail","Passion for Environment"],actionVerbs:["Assessed","Analyzed","Developed","Implemented","Monitored","Reported","Advised"],certifications:["Environmental Certification","LEED","ISO 14001"]},
+  "Mining & Natural Resources":{technical:["Mine Planning","Drilling Operations","Mineral Processing","Safety Compliance","Geological Assessment"],tools:["Mining Software","Surveying Equipment","Drilling Rigs","Safety Equipment"],soft:["Problem Solving","Safety Awareness","Attention to Detail","Teamwork","Physical Stamina"],actionVerbs:["Supervised","Operated","Extracted","Analyzed","Monitored","Maintained","Optimized"],certifications:["Mining Certification","First Aid","Mine Safety"]},
+  "Oil, Gas & Petroleum":{technical:["Reservoir Engineering","Drilling Operations","Production Optimization","Process Safety","HSE Compliance"],tools:["Petroleum Software","SCADA","Drilling Equipment","Safety Systems"],soft:["Problem Solving","Safety Awareness","Analytical Thinking","Teamwork","Calm Under Pressure"],actionVerbs:["Operated","Engineered","Optimized","Monitored","Maintained","Coordinated","Managed"],certifications:["IADC","IWCF","NEBOSH","Petroleum Engineering"]},
+  "Food & Beverage Service":{technical:["Food Preparation","Food Safety","Menu Planning","Portion Control","Customer Service"],tools:["Kitchen Equipment","POS Systems","Food Safety Tools","Inventory Software"],soft:["Customer Service","Time Management","Teamwork","Attention to Detail","Creativity"],actionVerbs:["Prepared","Cooked","Served","Managed","Coordinated","Maintained","Created"],certifications:["Food Safety Level 3","ServSafe","Culinary Arts"]},
+  "Childcare & Early Education":{technical:["Child Development","Curriculum Planning","Behavior Management","Health and Safety","Parent Communication"],tools:["Educational Toys","Learning Materials","Assessment Tools"],soft:["Patience","Empathy","Creativity","Communication","Observational Skills"],actionVerbs:["Nurtured","Educated","Supervised","Supported","Planned","Observed","Communicated"],certifications:["Childcare Level 3","Paediatric First Aid","Early Years Educator"]},
+  "Senior Care":{technical:["Personal Care","Medication Administration","Mobility Assistance","Dementia Care","Health Monitoring"],tools:["Care Management Software","Mobility Equipment","Medical Devices"],soft:["Compassion","Patience","Empathy","Attention to Detail","Communication"],actionVerbs:["Cared for","Assisted","Monitored","Supported","Administered","Coordinated","Documented"],certifications:["Care Certificate","Paediatric First Aid","Dementia Care"]},
+  "Personal Services":{technical:["Housekeeping","Organization","Time Management","Discretion","Errand Management"],tools:["Scheduling Software","Household Equipment","MS Office"],soft:["Reliability","Discretion","Attention to Detail","Initiative","Customer Service"],actionVerbs:["Managed","Organized","Coordinated","Maintained","Assisted","Scheduled","Handled"],certifications:["First Aid","Driver's License","Housekeeping Certification"]},
+  "Sports Coaching & Instruction":{technical:["Coaching","Training Program Design","Performance Analysis","Athlete Development","Sports Science"],tools:["Video Analysis","Performance Tracking","Fitness Equipment"],soft:["Motivation","Leadership","Communication","Patience","Adaptability"],actionVerbs:["Coached","Trained","Mentored","Developed","Analyzed","Motivated","Instructed"],certifications:["Coaching Certification","First Aid","Safeguarding"]},
+  "Entertainment & Performance":{technical:["Performance","Improvisation","Character Work","Stage Combat","Voice Training"],tools:["Script Software","Recording Equipment","Props"],soft:["Creativity","Confidence","Collaboration","Discipline","Resilience"],actionVerbs:["Performed","Rehearsed","Developed","Collaborated","Presented","Entertained","Trained"],certifications:["Acting Diploma","Performing Arts Certificate"]}
 };
 
+/* Existing key profiles preserved */
 const KEYWORD_PROFILES={
   "software engineer":{technical:["Software Development","Object-Oriented Programming","Data Structures","Algorithms","System Design","REST APIs","Unit Testing","Code Review","Version Control","Debugging","Scalability","Design Patterns"],tools:["Git","GitHub","Docker","Jira","CI/CD","Linux","Postman"],soft:["Problem Solving","Teamwork","Communication","Analytical Thinking","Attention to Detail"],actionVerbs:["Developed","Engineered","Designed","Implemented","Optimized","Refactored","Debugged","Collaborated","Deployed"],certifications:["AWS Certified Developer","Oracle Certified Professional","Microsoft Certified: Azure Developer"]},
   "software developer":{technical:["Software Development","Programming","Object-Oriented Design","API Integration","Testing","Debugging","Database Design","Version Control"],tools:["Git","GitHub","Docker","Jira","VS Code","Postman"],soft:["Problem Solving","Teamwork","Communication","Time Management"],actionVerbs:["Developed","Built","Implemented","Maintained","Tested","Improved","Integrated","Collaborated"],certifications:["Microsoft Certified","AWS Certified Developer"]},
@@ -594,35 +679,17 @@ const KEYWORD_PROFILES={
   "java developer":{technical:["Java","Spring Boot","Hibernate","JPA","REST APIs","Object-Oriented Programming","Multithreading","JUnit","Maven","Microservices","SQL","Design Patterns"],tools:["Git","IntelliJ IDEA","Maven","Docker","Jenkins","Postman","MySQL","Oracle"],soft:["Problem Solving","Analytical Thinking","Teamwork","Communication"],actionVerbs:["Developed","Implemented","Designed","Optimized","Debugged","Integrated","Maintained","Tested"],certifications:["Oracle Certified Professional: Java SE","Spring Professional Certification"]},
   "python developer":{technical:["Python","Django","Flask","FastAPI","REST APIs","Pandas","NumPy","SQL","Unit Testing","Automation","Web Scraping","Data Processing"],tools:["Git","PyCharm","Docker","PostgreSQL","Jupyter","Postman"],soft:["Problem Solving","Analytical Thinking","Attention to Detail","Teamwork"],actionVerbs:["Developed","Built","Automated","Implemented","Optimized","Integrated","Tested","Maintained"],certifications:["PCAP – Certified Associate Python Programmer","AWS Certified Developer"]},
   ".net developer":{technical:["C#",".NET Core","ASP.NET","Entity Framework","LINQ","REST APIs","MVC","SQL Server","Unit Testing","Dependency Injection"],tools:["Visual Studio","Git","Azure DevOps","SQL Server","Postman"],soft:["Problem Solving","Teamwork","Communication","Attention to Detail"],actionVerbs:["Developed","Implemented","Designed","Maintained","Optimized","Integrated","Tested","Deployed"],certifications:["Microsoft Certified: Azure Developer Associate",".NET Certification"]},
-  "mobile app developer":{technical:["Mobile App Development","Responsive UI","REST APIs","Local Storage","Push Notifications","App Store Deployment","Performance Optimization","Offline Support"],tools:["Android Studio","Xcode","Git","Firebase","Figma","Postman"],soft:["Problem Solving","Attention to Detail","Creativity","Teamwork"],actionVerbs:["Developed","Built","Designed","Optimized","Integrated","Published","Tested","Maintained"],certifications:["Google Associate Android Developer","Apple Certified iOS Developer"]},
-  "android developer":{technical:["Kotlin","Java","Android SDK","Jetpack Compose","Room Database","Retrofit","MVVM Architecture","Material Design","REST APIs","Google Play Services"],tools:["Android Studio","Git","Gradle","Firebase","Postman","Figma"],soft:["Problem Solving","Attention to Detail","Teamwork","Communication"],actionVerbs:["Developed","Implemented","Designed","Optimized","Integrated","Published","Debugged","Maintained"],certifications:["Google Associate Android Developer"]},
-  "ios developer":{technical:["Swift","SwiftUI","UIKit","Core Data","REST APIs","Auto Layout","MVVM Architecture","Push Notifications","App Store Connect"],tools:["Xcode","Git","CocoaPods","Firebase","Instruments","Figma"],soft:["Problem Solving","Attention to Detail","Teamwork","Communication"],actionVerbs:["Developed","Implemented","Designed","Optimized","Integrated","Published","Debugged","Maintained"],certifications:["Apple Certified iOS Developer"]},
-  "flutter developer":{technical:["Flutter","Dart","Widget Composition","State Management","REST APIs","Firebase","Responsive UI","Platform Channels","App Deployment"],tools:["Android Studio","VS Code","Git","Firebase","Figma","Postman"],soft:["Problem Solving","Attention to Detail","Teamwork","Adaptability"],actionVerbs:["Developed","Built","Implemented","Designed","Integrated","Optimized","Published","Maintained"],certifications:["Google Flutter Certification"]},
-  "devops engineer":{technical:["CI/CD","Infrastructure as Code","Containerization","Orchestration","Cloud Infrastructure","Monitoring","Automation","Linux Administration","Scripting","Configuration Management","Security Hardening"],tools:["Docker","Kubernetes","Jenkins","Terraform","Ansible","AWS","GitLab CI","Prometheus","Grafana","Bash"],soft:["Problem Solving","Collaboration","Attention to Detail","Communication"],actionVerbs:["Automated","Implemented","Deployed","Configured","Optimized","Monitored","Maintained","Migrated"],certifications:["AWS Certified DevOps Engineer","CKA – Certified Kubernetes Administrator","Docker Certified Associate"]},
-  "cloud engineer":{technical:["Cloud Architecture","Virtual Machines","Networking","Storage Solutions","Identity Management","Cost Optimization","Infrastructure as Code","High Availability","Disaster Recovery","Serverless"],tools:["AWS","Azure","Google Cloud","Terraform","Docker","Kubernetes","Linux","CloudWatch"],soft:["Problem Solving","Analytical Thinking","Communication","Documentation"],actionVerbs:["Designed","Deployed","Migrated","Configured","Optimized","Implemented","Managed","Monitored"],certifications:["AWS Certified Solutions Architect","Microsoft Certified: Azure Administrator","Google Cloud Professional"]},
-  "cloud architect":{technical:["Cloud Architecture","Enterprise Architecture","Multi-cloud Strategy","Cost Optimization","Security Architecture","High Availability","Disaster Recovery","Migration Strategy","Networking"],tools:["AWS","Azure","Google Cloud","Terraform","Kubernetes","Docker"],soft:["Strategic Thinking","Communication","Leadership","Stakeholder Management"],actionVerbs:["Architected","Designed","Led","Migrated","Optimized","Advised","Implemented","Governed"],certifications:["AWS Certified Solutions Architect – Professional","Azure Solutions Architect Expert"]},
-  "system administrator":{technical:["Windows Server","Linux Administration","Active Directory","Networking","Backup and Recovery","Virtualization","Patch Management","User Management","System Monitoring","Scripting"],tools:["PowerShell","Bash","VMware","Hyper-V","Zabbix","Nagios","Azure AD"],soft:["Problem Solving","Attention to Detail","Communication","Documentation"],actionVerbs:["Administered","Configured","Maintained","Troubleshooted","Monitored","Installed","Upgraded","Secured"],certifications:["Microsoft Certified: Azure Administrator","CompTIA Server+","RHCSA"]},
-  "network engineer":{technical:["Network Design","Routing","Switching","Firewall Configuration","VPN","TCP/IP","VLAN","Network Security","Network Monitoring","Troubleshooting"],tools:["Cisco IOS","Wireshark","Packet Tracer","SolarWinds","Palo Alto","Fortinet"],soft:["Problem Solving","Attention to Detail","Communication","Analytical Thinking"],actionVerbs:["Configured","Installed","Troubleshooted","Monitored","Designed","Maintained","Optimized","Documented"],certifications:["CCNA","CCNP","CompTIA Network+","Juniper JNCIA"]},
-  "it support specialist":{technical:["Technical Support","Hardware Troubleshooting","Software Installation","Network Troubleshooting","Ticketing Systems","User Account Management","Operating Systems"],tools:["Windows","macOS","Active Directory","Zendesk","TeamViewer","MS Office 365"],soft:["Communication","Patience","Problem Solving","Customer Service","Time Management"],actionVerbs:["Resolved","Supported","Troubleshooted","Installed","Configured","Documented","Assisted","Maintained"],certifications:["CompTIA A+","ITIL Foundation","Microsoft 365 Certified"]},
-  "database administrator":{technical:["Database Design","SQL","Backup and Recovery","Performance Tuning","Indexing","Replication","Data Security","Stored Procedures","Query Optimization","High Availability"],tools:["SQL Server","Oracle","MySQL","PostgreSQL","MongoDB","SSMS","pgAdmin"],soft:["Attention to Detail","Problem Solving","Analytical Thinking","Documentation"],actionVerbs:["Administered","Optimized","Backed up","Migrated","Monitored","Tuned","Secured","Maintained"],certifications:["Oracle Database Administrator Certified Professional","Microsoft Certified: Azure Database Administrator","MongoDB DBA"]},
   "data analyst":{technical:["Data Analysis","Data Cleaning","Data Visualization","SQL","Statistical Analysis","Reporting","Dashboard Development","Trend Analysis","Data Modeling","KPI Tracking"],tools:["Excel","SQL","Power BI","Tableau","Python","Pandas","Google Analytics"],soft:["Analytical Thinking","Attention to Detail","Communication","Business Acumen","Problem Solving"],actionVerbs:["Analyzed","Developed","Created","Identified","Automated","Presented","Maintained","Collaborated"],certifications:["Google Data Analytics Professional Certificate","Microsoft Certified: Power BI Data Analyst","Tableau Desktop Specialist"]},
   "data scientist":{technical:["Machine Learning","Statistical Modeling","Python","R","Data Wrangling","Feature Engineering","Predictive Modeling","A/B Testing","Data Visualization","NLP","Deep Learning"],tools:["Python","Jupyter","Scikit-learn","TensorFlow","Pandas","SQL","Tableau","Git"],soft:["Analytical Thinking","Problem Solving","Communication","Curiosity","Storytelling"],actionVerbs:["Developed","Analyzed","Built","Modeled","Evaluated","Presented","Optimized","Collaborated"],certifications:["IBM Data Science Professional Certificate","TensorFlow Developer Certificate"]},
   "data engineer":{technical:["ETL","Data Pipelines","Data Warehousing","SQL","Python","Big Data","Data Modeling","Streaming Data","Data Quality","Cloud Data Services"],tools:["Apache Spark","Airflow","Snowflake","BigQuery","AWS Glue","Kafka","Python","SQL"],soft:["Problem Solving","Attention to Detail","Collaboration","Analytical Thinking"],actionVerbs:["Built","Developed","Designed","Automated","Optimized","Migrated","Maintained","Integrated"],certifications:["Google Cloud Professional Data Engineer","AWS Certified Data Analytics","Databricks Certified"]},
   "machine learning engineer":{technical:["Machine Learning","Deep Learning","Model Deployment","Feature Engineering","Python","Model Evaluation","MLOps","Computer Vision","NLP","Recommendation Systems"],tools:["TensorFlow","PyTorch","Scikit-learn","Docker","Kubernetes","MLflow","AWS SageMaker","Git"],soft:["Analytical Thinking","Problem Solving","Research","Communication"],actionVerbs:["Developed","Trained","Deployed","Evaluated","Optimized","Implemented","Researched","Collaborated"],certifications:["TensorFlow Developer Certificate","AWS Certified Machine Learning – Specialty"]},
-  "ai engineer":{technical:["Artificial Intelligence","Machine Learning","Deep Learning","Natural Language Processing","Model Deployment","Prompt Engineering","API Integration","Python","Model Evaluation","Data Preprocessing"],tools:["Python","PyTorch","TensorFlow","Hugging Face","LangChain","OpenAI API","Docker","Git"],soft:["Analytical Thinking","Creativity","Problem Solving","Communication"],actionVerbs:["Developed","Implemented","Integrated","Trained","Optimized","Researched","Deployed","Evaluated"],certifications:["DeepLearning.AI Specialization","AWS Certified Machine Learning"]},
+  "devops engineer":{technical:["CI/CD","Infrastructure as Code","Containerization","Orchestration","Cloud Infrastructure","Monitoring","Automation","Linux Administration","Scripting","Configuration Management","Security Hardening"],tools:["Docker","Kubernetes","Jenkins","Terraform","Ansible","AWS","GitLab CI","Prometheus","Grafana","Bash"],soft:["Problem Solving","Collaboration","Attention to Detail","Communication"],actionVerbs:["Automated","Implemented","Deployed","Configured","Optimized","Monitored","Maintained","Migrated"],certifications:["AWS Certified DevOps Engineer","CKA – Certified Kubernetes Administrator","Docker Certified Associate"]},
+  "cloud engineer":{technical:["Cloud Architecture","Virtual Machines","Networking","Storage Solutions","Identity Management","Cost Optimization","Infrastructure as Code","High Availability","Disaster Recovery","Serverless"],tools:["AWS","Azure","Google Cloud","Terraform","Docker","Kubernetes","Linux","CloudWatch"],soft:["Problem Solving","Analytical Thinking","Communication","Documentation"],actionVerbs:["Designed","Deployed","Migrated","Configured","Optimized","Implemented","Managed","Monitored"],certifications:["AWS Certified Solutions Architect","Microsoft Certified: Azure Administrator","Google Cloud Professional"]},
   "cybersecurity analyst":{technical:["Threat Detection","Incident Response","Vulnerability Assessment","Security Monitoring","Risk Assessment","SIEM","Network Security","Endpoint Security","Security Policies","Log Analysis"],tools:["Splunk","Wireshark","Nessus","Metasploit","Burp Suite","Kali Linux","Firewalls"],soft:["Analytical Thinking","Attention to Detail","Problem Solving","Communication","Integrity"],actionVerbs:["Monitored","Investigated","Analyzed","Detected","Mitigated","Documented","Reported","Hardened"],certifications:["CompTIA Security+","Certified Ethical Hacker (CEH)","CISSP","GIAC GSEC"]},
-  "cybersecurity engineer":{technical:["Security Architecture","Penetration Testing","Firewall Management","Encryption","Identity and Access Management","Vulnerability Management","Incident Response","Security Automation"],tools:["Splunk","Kali Linux","Burp Suite","Nessus","Metasploit","Wireshark","SIEM"],soft:["Analytical Thinking","Problem Solving","Attention to Detail","Communication"],actionVerbs:["Implemented","Configured","Tested","Hardened","Monitored","Automated","Investigated","Secured"],certifications:["CISSP","CEH","CompTIA Security+","OSCP"]},
-  "information security analyst":{technical:["Security Monitoring","Risk Assessment","Compliance","Incident Response","Access Control","Security Auditing","Data Privacy","Vulnerability Analysis"],tools:["Splunk","Nessus","SIEM","DLP Tools","Firewalls"],soft:["Analytical Thinking","Integrity","Attention to Detail","Communication"],actionVerbs:["Monitored","Assessed","Audited","Implemented","Documented","Investigated","Enforced","Reported"],certifications:["CISSP","CISM","CompTIA Security+"]},
-  "ethical hacker":{technical:["Penetration Testing","Vulnerability Assessment","Exploit Development","Web Application Security","Network Security","Social Engineering","Reporting","Reconnaissance"],tools:["Kali Linux","Metasploit","Burp Suite","Nmap","Wireshark","Hashcat"],soft:["Analytical Thinking","Persistence","Ethics","Problem Solving","Communication"],actionVerbs:["Tested","Exploited","Assessed","Identified","Reported","Remediated","Documented","Collaborated"],certifications:["OSCP","CEH","CompTIA PenTest+"]},
-  "soc analyst":{technical:["Security Monitoring","Alert Triage","Incident Response","SIEM","Log Analysis","Threat Intelligence","Malware Analysis","Escalation Procedures"],tools:["Splunk","QRadar","Sentinel","Wireshark","CrowdStrike","VirusTotal"],soft:["Attention to Detail","Analytical Thinking","Calm Under Pressure","Communication"],actionVerbs:["Monitored","Triaged","Investigated","Escalated","Documented","Analyzed","Responded","Correlated"],certifications:["CompTIA CySA+","GIAC GCIH","Splunk Core Certified User"]},
   "qa engineer":{technical:["Test Planning","Manual Testing","Automation Testing","Test Cases","Regression Testing","Defect Tracking","API Testing","Performance Testing","Agile Testing"],tools:["Selenium","Jira","TestRail","Postman","JMeter","Cypress","Git"],soft:["Attention to Detail","Analytical Thinking","Communication","Patience","Teamwork"],actionVerbs:["Tested","Developed","Executed","Identified","Documented","Automated","Verified","Reported"],certifications:["ISTQB Certified Tester","Certified Selenium Professional"]},
-  "software tester":{technical:["Manual Testing","Test Case Design","Bug Reporting","Regression Testing","Functional Testing","UAT","Exploratory Testing","Defect Lifecycle"],tools:["Jira","TestRail","Selenium","Postman","Excel"],soft:["Attention to Detail","Analytical Thinking","Communication","Patience"],actionVerbs:["Tested","Executed","Identified","Documented","Verified","Reported","Validated","Collaborated"],certifications:["ISTQB Certified Tester"]},
-  "automation tester":{technical:["Test Automation","Selenium WebDriver","Framework Design","API Automation","CI Integration","Test Scripts","Page Object Model","Data-Driven Testing"],tools:["Selenium","Cypress","Playwright","Jenkins","Git","Postman","TestNG","Maven"],soft:["Programming Logic","Attention to Detail","Problem Solving","Teamwork"],actionVerbs:["Automated","Developed","Implemented","Maintained","Executed","Integrated","Optimized","Reported"],certifications:["ISTQB Advanced Test Automation Engineer"]},
   "ui/ux designer":{technical:["User Research","Wireframing","Prototyping","Interaction Design","Usability Testing","Information Architecture","Design Systems","Accessibility","Responsive Design","User Flows"],tools:["Figma","Adobe XD","Sketch","Photoshop","Illustrator","Miro","InVision"],soft:["Empathy","Creativity","Communication","Problem Solving","Attention to Detail"],actionVerbs:["Designed","Researched","Prototyped","Tested","Collaborated","Developed","Improved","Presented"],certifications:["Google UX Design Professional Certificate","Nielsen Norman Group UX Certification"]},
-  "product designer":{technical:["Product Design","User Research","Wireframing","Prototyping","Design Systems","Usability Testing","Interaction Design","Visual Design","Design Thinking"],tools:["Figma","Sketch","Adobe XD","Miro","Principle","Notion"],soft:["Empathy","Communication","Collaboration","Creativity","Critical Thinking"],actionVerbs:["Designed","Led","Researched","Prototyped","Tested","Collaborated","Iterated","Delivered"],certifications:["Google UX Design Professional Certificate"]},
   "business analyst":{technical:["Requirements Gathering","Business Process Modeling","Gap Analysis","Stakeholder Management","Data Analysis","User Stories","Process Improvement","Documentation","UAT Coordination"],tools:["Excel","Jira","Confluence","Visio","Power BI","SQL","Lucidchart"],soft:["Communication","Analytical Thinking","Problem Solving","Negotiation","Attention to Detail"],actionVerbs:["Analyzed","Documented","Gathered","Facilitated","Identified","Coordinated","Improved","Presented"],certifications:["CBAP","PMI-PBA","IIBA ECBA"]},
   "project manager":{technical:["Project Planning","Budget Management","Risk Management","Stakeholder Management","Scope Management","Resource Allocation","Agile Methodology","Reporting","Timeline Management"],tools:["MS Project","Jira","Asana","Trello","Confluence","Excel","Slack"],soft:["Leadership","Communication","Negotiation","Problem Solving","Decision Making"],actionVerbs:["Managed","Led","Coordinated","Planned","Delivered","Monitored","Communicated","Mitigated"],certifications:["PMP","CAPM","PRINCE2","Certified ScrumMaster"]},
-  "scrum master":{technical:["Agile Methodology","Scrum Framework","Sprint Planning","Backlog Refinement","Retrospectives","Velocity Tracking","Impediment Removal","Team Facilitation"],tools:["Jira","Confluence","Trello","Azure DevOps","Miro"],soft:["Facilitation","Coaching","Communication","Conflict Resolution","Empathy"],actionVerbs:["Facilitated","Coached","Removed","Tracked","Organized","Supported","Led","Improved"],certifications:["Certified ScrumMaster (CSM)","Professional Scrum Master (PSM I)","SAFe Scrum Master"]},
   "product manager":{technical:["Product Roadmap","User Stories","Market Research","Prioritization","A/B Testing","Product Analytics","Stakeholder Management","Go-to-Market Strategy","Backlog Management"],tools:["Jira","Figma","Amplitude","Mixpanel","Notion","Google Analytics","SQL"],soft:["Leadership","Communication","Strategic Thinking","Empathy","Decision Making"],actionVerbs:["Defined","Led","Prioritized","Launched","Analyzed","Coordinated","Developed","Delivered"],certifications:["Certified Scrum Product Owner (CSPO)"]},
   "civil engineer":{technical:["Structural Analysis","Construction Management","Site Supervision","Quantity Estimation","AutoCAD Drafting","Quality Control","Safety Compliance","Surveying","Concrete Design"],tools:["AutoCAD","Revit","STAAD Pro","ETABS","MS Project","Excel"],soft:["Problem Solving","Attention to Detail","Teamwork","Communication","Leadership"],actionVerbs:["Designed","Supervised","Estimated","Inspected","Coordinated","Calculated","Managed","Ensured"],certifications:["Professional Engineer (PE)","NEBOSH","PMP"]},
   "mechanical engineer":{technical:["CAD Modeling","Thermodynamics","Mechanical Design","Manufacturing Processes","Quality Control","Maintenance Planning","HVAC Systems","Material Selection"],tools:["SolidWorks","AutoCAD","CATIA","ANSYS","MATLAB","MS Project"],soft:["Problem Solving","Attention to Detail","Teamwork","Analytical Thinking"],actionVerbs:["Designed","Developed","Analyzed","Maintained","Improved","Supervised","Tested","Optimized"],certifications:["Professional Engineer (PE)","SolidWorks Certification","Six Sigma Green Belt"]},
@@ -633,15 +700,13 @@ const KEYWORD_PROFILES={
   "marketing executive":{technical:["Campaign Management","Market Research","Content Creation","Social Media Marketing","Brand Promotion","Event Coordination","Copywriting","Performance Tracking"],tools:["Google Analytics","Meta Business Suite","Canva","Mailchimp","HubSpot","Excel"],soft:["Creativity","Communication","Time Management","Teamwork","Persuasion"],actionVerbs:["Developed","Coordinated","Launched","Managed","Created","Analyzed","Promoted","Supported"],certifications:["Google Digital Marketing Certificate","HubSpot Inbound Marketing"]},
   "digital marketing specialist":{technical:["SEO","SEM","Google Ads","Social Media Marketing","Email Marketing","Content Marketing","Analytics","Conversion Optimization","PPC","Marketing Automation"],tools:["Google Analytics","Google Ads","Meta Ads Manager","SEMrush","Ahrefs","Mailchimp","HubSpot","Canva"],soft:["Creativity","Analytical Thinking","Communication","Adaptability","Time Management"],actionVerbs:["Managed","Developed","Optimized","Launched","Analyzed","Increased","Implemented","Tracked"],certifications:["Google Ads Certification","Google Analytics Certification","Meta Blueprint"]},
   "seo specialist":{technical:["Keyword Research","On-Page SEO","Off-Page SEO","Technical SEO","Link Building","Content Optimization","Site Audits","Schema Markup","SERP Analysis"],tools:["Google Search Console","Google Analytics","SEMrush","Ahrefs","Moz","Screaming Frog"],soft:["Analytical Thinking","Attention to Detail","Patience","Communication"],actionVerbs:["Optimized","Researched","Analyzed","Improved","Implemented","Monitored","Audited","Reported"],certifications:["Google Analytics Certification","SEMrush SEO Certification"]},
-  "social media manager":{technical:["Content Planning","Community Management","Social Media Strategy","Copywriting","Analytics","Campaign Management","Influencer Collaboration","Brand Voice"],tools:["Meta Business Suite","Hootsuite","Buffer","Canva","Later","Google Analytics"],soft:["Creativity","Communication","Trend Awareness","Time Management","Empathy"],actionVerbs:["Managed","Created","Developed","Scheduled","Engaged","Analyzed","Grew","Coordinated"],certifications:["Meta Certified Digital Marketing Associate","HubSpot Social Media"]},
-  "content writer":{technical:["Content Writing","Copywriting","SEO Writing","Editing","Proofreading","Research","Storytelling","Content Strategy","Blog Writing"],tools:["Google Docs","WordPress","Grammarly","Surfer SEO","Canva","Notion"],soft:["Creativity","Attention to Detail","Research Skills","Time Management","Adaptability"],actionVerbs:["Wrote","Edited","Researched","Developed","Published","Optimized","Proofread","Collaborated"],certifications:["HubSpot Content Marketing","Google Digital Marketing"]},
   "graphic designer":{technical:["Visual Design","Typography","Layout Design","Brand Identity","Print Design","Digital Design","Color Theory","Illustration","Photo Editing"],tools:["Adobe Photoshop","Adobe Illustrator","Adobe InDesign","Figma","Canva","CorelDRAW"],soft:["Creativity","Attention to Detail","Time Management","Communication"],actionVerbs:["Designed","Created","Developed","Produced","Illustrated","Collaborated","Refined","Delivered"],certifications:["Adobe Certified Professional","Google UX Design"]},
   "teacher":{technical:["Lesson Planning","Curriculum Development","Classroom Management","Student Assessment","Differentiated Instruction","Educational Technology","Student Engagement","Parent Communication"],tools:["Google Classroom","MS Teams","Moodle","Zoom","Canva","PowerPoint"],soft:["Communication","Patience","Empathy","Classroom Leadership","Adaptability"],actionVerbs:["Taught","Developed","Planned","Assessed","Mentored","Coordinated","Facilitated","Supported"],certifications:["Teaching License","TEFL","TESOL","Google Certified Educator"]},
   "nurse":{technical:["Patient Care","Vital Signs Monitoring","Medication Administration","Wound Care","Patient Assessment","Infection Control","Medical Documentation","IV Therapy","Care Planning"],tools:["EMR Systems","Electronic Health Records","Medical Devices"],soft:["Empathy","Communication","Attention to Detail","Stress Management","Teamwork"],actionVerbs:["Provided","Monitored","Administered","Assessed","Documented","Assisted","Coordinated","Educated"],certifications:["Registered Nurse (RN) License","BLS","ACLS","First Aid"]},
   "hr executive":{technical:["Recruitment","Onboarding","Employee Relations","HR Administration","Performance Management","Payroll Support","HR Policies","Record Keeping"],tools:["HRIS","Excel","LinkedIn Recruiter","ATS Software","MS Office"],soft:["Communication","Confidentiality","Empathy","Organization","Negotiation"],actionVerbs:["Recruited","Coordinated","Maintained","Administered","Supported","Processed","Organized","Assisted"],certifications:["SHRM-CP","CIPD Level 3","HRCI"]},
   "customer service executive":{technical:["Customer Support","Conflict Resolution","Complaint Handling","Order Processing","Product Knowledge","Customer Retention","Call Handling"],tools:["CRM Software","Zendesk","Freshdesk","Live Chat","MS Office"],soft:["Communication","Patience","Empathy","Problem Solving","Active Listening"],actionVerbs:["Resolved","Assisted","Handled","Responded","Documented","Escalated","Maintained","Supported"],certifications:["Customer Service Excellence","ITIL Foundation"]},
-  "logistics executive":{technical:["Logistics Coordination","Inventory Management","Shipping Documentation","Warehouse Operations","Order Fulfilment","Vendor Coordination","Route Planning","Cost Control"],tools:["SAP","Excel","WMS","ERP Systems","MS Office"],soft:["Organization","Attention to Detail","Problem Solving","Communication"],actionVerbs:["Coordinated","Managed","Tracked","Processed","Monitored","Optimized","Arranged","Maintained"],certifications:["CSCP","CPIM","Lean Six Sigma"]},
-  "administrative officer":{technical:["Office Administration","Record Management","Scheduling","Correspondence","Report Preparation","Data Entry","Meeting Coordination","Document Control"],tools:["MS Office","Excel","Outlook","Google Workspace","SharePoint"],soft:["Organization","Communication","Attention to Detail","Time Management","Discretion"],actionVerbs:["Managed","Coordinated","Prepared","Maintained","Organized","Processed","Scheduled","Supported"],certifications:["Business Administration","Microsoft Office Specialist"]}
+  "chef":{technical:["Food Preparation","Menu Planning","Kitchen Management","Food Safety","Portion Control","Plating","Recipe Development"],tools:["Kitchen Equipment","POS Systems","Inventory Software"],soft:["Creativity","Time Management","Teamwork","Stress Management","Attention to Detail"],actionVerbs:["Prepared","Created","Managed","Trained","Maintained","Developed","Coordinated"],certifications:["Food Safety Level 3","Culinary Arts Diploma"]},
+  "driver":{technical:["Vehicle Operation","Route Planning","Vehicle Maintenance","Traffic Regulations","Load Management"],tools:["GPS Systems","Logbooks","Communication Equipment"],soft:["Punctuality","Reliability","Patience","Safety Awareness","Attention to Detail"],actionVerbs:["Drove","Delivered","Operated","Maintained","Navigated","Transported","Scheduled"],certifications:["Commercial Driver's License","HGV License","CPC"]}
 };
 
 const GENERIC_PROFILE={technical:["Communication","Problem Solving","Time Management","Teamwork","Organization","Attention to Detail","Adaptability","Planning"],tools:["Microsoft Office","Excel","Google Workspace","Email"],soft:["Communication","Teamwork","Problem Solving","Adaptability","Reliability","Initiative"],actionVerbs:["Managed","Developed","Coordinated","Improved","Supported","Organized","Delivered","Collaborated","Maintained","Assisted"],certifications:[]};
@@ -678,7 +743,6 @@ const PHRASE_MAP=[
   [/\ba\s+lot\s+of\b/gi,'substantial'],[/\bstuff\b/gi,'tasks'],[/\bthings\b/gi,'tasks']
 ];
 const WEAK_STARTS=/^(i|we|my|our|the|a|an|and|also|then|so|just)\b\s*/i;
-
 function polishSentence(input,verbs){
   let s=String(input||'').trim().replace(/\s+/g,' ');
   if(!s)return'';
@@ -781,12 +845,15 @@ const Auth={
 };
 
 /* ============================================================
-   CV MODEL
+   CV MODEL — with GCE O/L, A/L, School
    ============================================================ */
 const SECTION_DEFS=[
   {key:'summary',label:'Professional Summary'},
   {key:'experience',label:'Work Experience'},
-  {key:'education',label:'Education'},
+  {key:'education',label:'University Education'},
+  {key:'gceAl',label:'GCE A/L Results'},
+  {key:'gceOl',label:'GCE O/L Results'},
+  {key:'schools',label:'School Education'},
   {key:'skills',label:'Skills'},
   {key:'projects',label:'Projects'},
   {key:'certifications',label:'Certifications'},
@@ -803,6 +870,9 @@ function newCV(user,opts){
     template:'modern',accent:'#1f5eff',created:Date.now(),updated:Date.now(),
     personal:{fullName:(user&&user.name)||'',title:opts.targetJob||'',email:(user&&user.email)||'',phone:'',location:'',linkedin:'',github:'',portfolio:'',photo:''},
     summary:'',education:[],experience:[],projects:[],
+    gceAl:{year:'',subjects:[]},
+    gceOl:{year:'',subjects:[]},
+    schools:[],
     skills:{technical:[],soft:[],tools:[],programming:[],frameworks:[],databases:[],spoken:[]},
     certifications:[],achievements:[],languages:[],
     references:{mode:'onrequest',list:[]},
@@ -817,9 +887,17 @@ function blankCert(){return{name:'',org:'',date:'',credentialId:'',url:''};}
 function blankAchv(){return{title:'',org:'',date:'',description:''};}
 function blankLang(){return{language:'',level:''};}
 function blankRef(){return{name:'',title:'',company:'',email:'',phone:''};}
+function blankResult(){return{subject:'',grade:''};}
+function blankSchool(){return{name:'',location:'',start:'',end:'',description:''};}
+
+const GCE_GRADES=['A*','A','B','C','D','E','S','W','F','U','Distinction','Merit','Pass','Fail'];
+
+/* Common GCE subjects to help autocomplete (not enforced) */
+const OL_SUBJECTS=['Religion','Sinhala','Tamil','English','Mathematics','Science','History','Geography','Civics','Health Science','ICT','Commerce','Accounting','Business Studies','Agriculture','Home Economics','Art','Music','Dancing','Drama','Second Language','Technology'];
+const AL_SUBJECTS=['Combined Mathematics','Physics','Chemistry','Biology','Agricultural Science','Business Studies','Accounting','Economics','ICT','Business Statistics','Political Science','Geography','History','Sinhala','Tamil','English','Buddhism','Hinduism','Islam','Christianity','Aesthetic Studies','Home Economics','Engineering Technology','Science for Technology','Bio Systems Technology','General English','Common General Test'];
 
 /* ============================================================
-   HTML CV RENDERING (for live preview)
+   HTML CV RENDERING
    ============================================================ */
 function contactItems(cv){
   const p=cv.personal;const items=[];
@@ -835,6 +913,16 @@ function bullets(text){
   const lines=String(text||'').split(/\n+/).map(l=>l.replace(/^[\s•\-*]+/,'').trim()).filter(Boolean);
   if(!lines.length)return'';
   return'<ul>'+lines.map(l=>'<li>'+esc(l)+'</li>').join('')+'</ul>';
+}
+function resultsBlockHTML(resultObj){
+  const subjects=(resultObj.subjects||[]).filter(s=>hasText(s.subject)||hasText(s.grade));
+  if(!subjects.length)return'';
+  let h='<div class="cv-results">';
+  subjects.forEach(s=>{
+    h+='<div class="cv-result-row"><span>'+esc(s.subject||'')+'</span><b>'+esc(s.grade||'')+'</b></div>';
+  });
+  h+='</div>';
+  return h;
 }
 const SECTION_RENDERERS={
   summary(cv){
@@ -876,6 +964,41 @@ const SECTION_RENDERERS={
       if(hasText(e.gpa))h+='<div class="cv-entry-body">GPA: '+esc(e.gpa)+'</div>';
       if(hasText(e.coursework))h+='<div class="cv-entry-body"><b>Relevant Coursework:</b> '+esc(e.coursework)+'</div>';
       if(hasText(e.achievements))h+='<div class="cv-entry-body">'+bullets(e.achievements)+'</div>';
+      h+='</div>';
+    });
+    return h+'</section>';
+  },
+  gceAl(cv){
+    const g=cv.gceAl||{};
+    const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+    if(!hasData)return'';
+    let h='<section class="cv-sec"><h2 class="cv-sec-title">GCE Advanced Level (A/L)</h2>';
+    if(hasText(g.year))h+='<div class="cv-entry-sub" style="margin-bottom:5px">Year: '+esc(g.year)+'</div>';
+    h+=resultsBlockHTML(g);
+    return h+'</section>';
+  },
+  gceOl(cv){
+    const g=cv.gceOl||{};
+    const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+    if(!hasData)return'';
+    let h='<section class="cv-sec"><h2 class="cv-sec-title">GCE Ordinary Level (O/L)</h2>';
+    if(hasText(g.year))h+='<div class="cv-entry-sub" style="margin-bottom:5px">Year: '+esc(g.year)+'</div>';
+    h+=resultsBlockHTML(g);
+    return h+'</section>';
+  },
+  schools(cv){
+    const list=(cv.schools||[]).filter(s=>hasText(s.name));
+    if(!list.length)return'';
+    let h='<section class="cv-sec"><h2 class="cv-sec-title">School Education</h2>';
+    list.forEach(s=>{
+      h+='<div class="cv-entry"><div class="cv-entry-head"><div class="l">';
+      h+='<div class="cv-entry-title">'+esc(s.name)+'</div>';
+      if(hasText(s.location))h+='<div class="cv-entry-sub">'+esc(s.location)+'</div>';
+      h+='</div>';
+      const d=range(s.start,s.end,false);
+      if(d)h+='<div class="cv-entry-date">'+esc(d)+'</div>';
+      h+='</div>';
+      if(hasText(s.description))h+='<div class="cv-entry-body">'+esc(s.description)+'</div>';
       h+='</div>';
     });
     return h+'</section>';
@@ -1003,6 +1126,11 @@ function cvFullText(cv){
   if(cv.summary)parts.push(cv.summary);
   (cv.experience||[]).forEach(e=>parts.push(e.title,e.company,e.responsibilities,e.achievements));
   (cv.education||[]).forEach(e=>parts.push(e.institution,e.degree,e.field,e.coursework,e.achievements));
+  const gAl=cv.gceAl||{};if(gAl.year)parts.push('GCE Advanced Level '+gAl.year);
+  (gAl.subjects||[]).forEach(s=>parts.push(s.subject,s.grade));
+  const gOl=cv.gceOl||{};if(gOl.year)parts.push('GCE Ordinary Level '+gOl.year);
+  (gOl.subjects||[]).forEach(s=>parts.push(s.subject,s.grade));
+  (cv.schools||[]).forEach(s=>parts.push(s.name,s.location,s.description));
   (cv.projects||[]).forEach(e=>parts.push(e.name,e.description,e.technologies,e.role,e.achievements));
   Object.keys(cv.skills||{}).forEach(k=>parts.push((cv.skills[k]||[]).join(' ')));
   (cv.certifications||[]).forEach(c=>parts.push(c.name,c.org));
@@ -1135,32 +1263,11 @@ function parseJobDescription(jd){
 }
 
 /* ============================================================
-   PDF GENERATOR (pure JS — real file download)
+   PDF GENERATOR
    ============================================================ */
-
-/* Helvetica width tables (chars 32–126) */
-const HELV_REG_W=[
-  278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,
-  556,556,556,556,556,556,556,556,556,556,
-  278,278,584,584,584,556,1015,
-  667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,
-  278,278,278,469,556,333,
-  556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,
-  334,260,334,584
-];
-const HELV_BOLD_W=[
-  278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,
-  556,556,556,556,556,556,556,556,556,556,
-  333,333,584,584,584,611,975,
-  722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,
-  333,278,333,584,556,333,
-  556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,
-  389,280,389,584
-];
-
-/* Map Unicode → WinAnsi */
+const HELV_REG_W=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+const HELV_BOLD_W=[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
 const WINANSI_MAP={0x2022:0x95,0x2013:0x96,0x2014:0x97,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2026:0x85,0x20AC:0x80,0x2122:0x99,0x0160:0x8A,0x0152:0x8C,0x017D:0x8E,0x0161:0x9A,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F};
-
 function escapePdfString(str){
   let out='';
   for(let i=0;i<str.length;i++){
@@ -1176,7 +1283,6 @@ function escapePdfString(str){
   }
   return out;
 }
-
 class SimplePDF{
   constructor(){
     this.W=595.28;this.H=841.89;
@@ -1229,19 +1335,13 @@ class SimplePDF{
     const push=s=>{chunks.push(s);offset+=s.length;};
     const startObj=id=>{offsets[id]=offset;push(id+' 0 obj\n');};
     const endObj=()=>{push('endobj\n');};
-
     push('%PDF-1.4\n');
-
-    startObj(1);
-    push('<< /Type /Catalog /Pages 2 0 R >>\n');
-    endObj();
-
+    startObj(1);push('<< /Type /Catalog /Pages 2 0 R >>\n');endObj();
     startObj(2);
     const kids=[];
     for(let i=0;i<N;i++)kids.push(pageId(i)+' 0 R');
     push('<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+N+' >>\n');
     endObj();
-
     for(let i=0;i<N;i++){
       const pid=pageId(i),cid=contentId(i);
       startObj(pid);
@@ -1256,40 +1356,31 @@ class SimplePDF{
       push('\nendstream\n');
       endObj();
     }
-
     const fontNames=['Helvetica','Helvetica-Bold','Helvetica-Oblique','Helvetica-BoldOblique'];
     for(let i=0;i<4;i++){
       startObj(fontBaseId+i);
       push('<< /Type /Font /Subtype /Type1 /BaseFont /'+fontNames[i]+' /Encoding /WinAnsiEncoding >>\n');
       endObj();
     }
-
     startObj(infoId);
     push('<< /Producer (CV PRO STUDIO) /Creator (CV PRO STUDIO) /Title ('+escapePdfString(docTitle||'CV')+') >>\n');
     endObj();
-
     const xrefOffset=offset;
     push('xref\n');
     push('0 '+(totalObjs+1)+'\n');
     push('0000000000 65535 f \n');
-    for(let i=1;i<=totalObjs;i++){
-      push(String(offsets[i]).padStart(10,'0')+' 00000 n \n');
-    }
+    for(let i=1;i<=totalObjs;i++)push(String(offsets[i]).padStart(10,'0')+' 00000 n \n');
     push('trailer\n');
     push('<< /Size '+(totalObjs+1)+' /Root 1 0 R /Info '+infoId+' 0 R >>\n');
     push('startxref\n');
     push(xrefOffset+'\n');
     push('%%EOF\n');
-
     return new Blob(chunks,{type:'application/pdf'});
   }
 }
-
-/* Word wrap for PDF */
 function wrapText(text,fontKey,size,maxWidth,measure){
   const words=String(text).split(/\s+/).filter(Boolean);
-  const lines=[];
-  let line='';
+  const lines=[];let line='';
   for(let wi=0;wi<words.length;wi++){
     const word=words[wi];
     const test=line?line+' '+word:word;
@@ -1310,8 +1401,6 @@ function wrapText(text,fontKey,size,maxWidth,measure){
   if(line)lines.push(line);
   return lines;
 }
-
-/* Render CV into a SimplePDF document */
 function renderCVToPDF(cv){
   const pdf=new SimplePDF();
   const accent=hexToRgb01(cv.accent||'#1f5eff');
@@ -1323,54 +1412,30 @@ function renderCVToPDF(cv){
   const order=(cv.sectionOrder&&cv.sectionOrder.length)?cv.sectionOrder:SECTION_DEFS.map(s=>s.key);
   const hidden=cv.hiddenSections||[];
   const M=(s,fk,sz)=>pdf.measure(s,fk,sz);
-
   function ensure(h){if(pdf.y-h<pdf.mb)pdf.newPage();}
-
-  /* Header */
   pdf.setFont('F2',22);pdf.setColor(black);
   const nameLines=wrapText(p.fullName||'Your Name','F2',22,contentW,M);
   nameLines.forEach(l=>{pdf.text(l,pdf.ml,pdf.y);pdf.y-=26;});
-
-  if(hasText(p.title)){
-    pdf.setFont('F2',11);pdf.setColor(accent);
-    pdf.text(p.title,pdf.ml,pdf.y);
-    pdf.y-=15;
-  }
-
+  if(hasText(p.title)){pdf.setFont('F2',11);pdf.setColor(accent);pdf.text(p.title,pdf.ml,pdf.y);pdf.y-=15;}
   const contacts=[p.email,p.phone,p.location,p.linkedin,p.github,p.portfolio].filter(hasText).map(shortUrl);
   if(contacts.length){
     pdf.setFont('F1',9);pdf.setColor(gray);
     const lines=wrapText(contacts.join('   |   '),'F1',9,contentW,M);
     lines.forEach(l=>{pdf.text(l,pdf.ml,pdf.y);pdf.y-=12;});
   }
-
-  pdf.y-=6;
-  pdf.line(pdf.ml,pdf.y,pdf.W-pdf.mr,pdf.y,1.2,accent);
-  pdf.y-=16;
-
-  /* Section heading */
+  pdf.y-=6;pdf.line(pdf.ml,pdf.y,pdf.W-pdf.mr,pdf.y,1.2,accent);pdf.y-=16;
   function heading(label){
     ensure(30);
     pdf.setFont('F2',10.5);pdf.setColor(accent);
     pdf.text(label.toUpperCase(),pdf.ml,pdf.y);
-    pdf.y-=4;
-    pdf.line(pdf.ml,pdf.y,pdf.W-pdf.mr,pdf.y,0.9,accent);
-    pdf.y-=13;
+    pdf.y-=4;pdf.line(pdf.ml,pdf.y,pdf.W-pdf.mr,pdf.y,0.9,accent);pdf.y-=13;
   }
-
-  /* Paragraph */
   function para(text,size,color,indent){
     size=size||9.5;color=color||dark;indent=indent||0;
     pdf.setFont('F1',size);pdf.setColor(color);
     const lines=wrapText(text,'F1',size,contentW-indent,M);
-    lines.forEach(line=>{
-      ensure(size*1.4);
-      pdf.text(line,pdf.ml+indent,pdf.y);
-      pdf.y-=size*1.4;
-    });
+    lines.forEach(line=>{ensure(size*1.4);pdf.text(line,pdf.ml+indent,pdf.y);pdf.y-=size*1.4;});
   }
-
-  /* Bullet list */
   function bulletList(text,size){
     size=size||9.5;
     const items=String(text||'').split(/\n+/).map(l=>l.replace(/^[\s•\-*·]+/,'').trim()).filter(Boolean);
@@ -1378,36 +1443,25 @@ function renderCVToPDF(cv){
       const lines=wrapText(item,'F1',size,contentW-12,M);
       lines.forEach((line,i)=>{
         ensure(size*1.4);
-        if(i===0){
-          pdf.setFont('F2',size);pdf.setColor(accent);
-          pdf.text('\u2022',pdf.ml+1,pdf.y);
-        }
+        if(i===0){pdf.setFont('F2',size);pdf.setColor(accent);pdf.text('\u2022',pdf.ml+1,pdf.y);}
         pdf.setFont('F1',size);pdf.setColor(dark);
-        pdf.text(line,pdf.ml+12,pdf.y);
-        pdf.y-=size*1.4;
+        pdf.text(line,pdf.ml+12,pdf.y);pdf.y-=size*1.4;
       });
     });
   }
-
-  /* Entry header (title left, date right, subtitle below) */
   function entryHead(title,subtitle,date){
     ensure(32);
     const titleSize=10.5,dateSize=9;
     const dateW=date?M(date,'F3',dateSize):0;
     const maxW=contentW-dateW-14;
-
     pdf.setFont('F2',titleSize);pdf.setColor(black);
     const titleLines=wrapText(title||'','F2',titleSize,maxW,M);
     titleLines.forEach((line,i)=>{
       pdf.setFont('F2',titleSize);pdf.setColor(black);
       pdf.text(line,pdf.ml,pdf.y);
-      if(i===0&&date){
-        pdf.setFont('F3',dateSize);pdf.setColor(gray);
-        pdf.text(date,pdf.W-pdf.mr-dateW,pdf.y);
-      }
+      if(i===0&&date){pdf.setFont('F3',dateSize);pdf.setColor(gray);pdf.text(date,pdf.W-pdf.mr-dateW,pdf.y);}
       pdf.y-=titleSize*1.35;
     });
-
     if(subtitle){
       pdf.setFont('F1',9.5);pdf.setColor(dark);
       const subLines=wrapText(subtitle,'F1',9.5,contentW,M);
@@ -1415,17 +1469,30 @@ function renderCVToPDF(cv){
     }
     pdf.y-=2;
   }
-
-  /* Render all sections */
+  function resultsGrid(resultObj){
+    const subjects=(resultObj.subjects||[]).filter(s=>hasText(s.subject)||hasText(s.grade));
+    if(!subjects.length)return;
+    const colW=(contentW-16)/2;
+    let col=0;let maxY=pdf.y;
+    let startY=pdf.y;
+    subjects.forEach(s=>{
+      ensure(14);
+      const x=pdf.ml+col*(colW+16);
+      const y=pdf.y;
+      pdf.setFont('F1',9.5);pdf.setColor(dark);
+      pdf.text(s.subject||'',x,y);
+      const gradeW=M(s.grade||'','F2',9.5);
+      pdf.setFont('F2',9.5);pdf.setColor(black);
+      pdf.text(s.grade||'',x+colW-gradeW,y);
+      pdf.line(x,y-3,x+colW,y-3,0.3,[0.85,0.88,0.92]);
+      col++;
+      if(col===2){col=0;pdf.y-=14;}
+    });
+    if(col===1)pdf.y-=14;
+  }
   order.forEach(key=>{
     if(hidden.indexOf(key)!==-1)return;
-
-    if(key==='summary'&&hasText(cv.summary)){
-      heading('Professional Summary');
-      para(cv.summary);
-      pdf.y-=4;
-    }
-
+    if(key==='summary'&&hasText(cv.summary)){heading('Professional Summary');para(cv.summary);pdf.y-=4;}
     if(key==='experience'){
       const list=(cv.experience||[]).filter(e=>hasText(e.title)||hasText(e.company));
       if(list.length){
@@ -1440,7 +1507,6 @@ function renderCVToPDF(cv){
         pdf.y-=4;
       }
     }
-
     if(key==='education'){
       const list=(cv.education||[]).filter(e=>hasText(e.institution)||hasText(e.degree));
       if(list.length){
@@ -1456,14 +1522,41 @@ function renderCVToPDF(cv){
         pdf.y-=4;
       }
     }
-
+    if(key==='gceAl'){
+      const g=cv.gceAl||{};
+      const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+      if(hasData){
+        heading('GCE Advanced Level (A/L)');
+        if(hasText(g.year))para('Year: '+g.year,9.5,dark);
+        resultsGrid(g);
+        pdf.y-=4;
+      }
+    }
+    if(key==='gceOl'){
+      const g=cv.gceOl||{};
+      const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+      if(hasData){
+        heading('GCE Ordinary Level (O/L)');
+        if(hasText(g.year))para('Year: '+g.year,9.5,dark);
+        resultsGrid(g);
+        pdf.y-=4;
+      }
+    }
+    if(key==='schools'){
+      const list=(cv.schools||[]).filter(s=>hasText(s.name));
+      if(list.length){
+        heading('School Education');
+        list.forEach((s,idx)=>{
+          if(idx>0)pdf.y-=4;
+          entryHead(s.name,s.location||'',range(s.start,s.end,false));
+          if(hasText(s.description))para(s.description,9.5,dark);
+        });
+        pdf.y-=4;
+      }
+    }
     if(key==='skills'){
       const s=cv.skills||{};
-      const groups=[
-        ['Technical Skills',s.technical],['Programming Languages',s.programming],
-        ['Frameworks & Libraries',s.frameworks],['Databases',s.databases],
-        ['Tools & Technologies',s.tools],['Soft Skills',s.soft]
-      ].filter(g=>g[1]&&g[1].length);
+      const groups=[['Technical Skills',s.technical],['Programming Languages',s.programming],['Frameworks & Libraries',s.frameworks],['Databases',s.databases],['Tools & Technologies',s.tools],['Soft Skills',s.soft]].filter(g=>g[1]&&g[1].length);
       if(groups.length){
         heading('Skills');
         groups.forEach(g=>{
@@ -1473,19 +1566,14 @@ function renderCVToPDF(cv){
           const lines=wrapText(body,'F1',9.5,contentW-labelW,M);
           lines.forEach((line,i)=>{
             ensure(13);
-            if(i===0){
-              pdf.setFont('F2',9.5);pdf.setColor(black);
-              pdf.text(label,pdf.ml,pdf.y);
-            }
+            if(i===0){pdf.setFont('F2',9.5);pdf.setColor(black);pdf.text(label,pdf.ml,pdf.y);}
             pdf.setFont('F1',9.5);pdf.setColor(dark);
-            pdf.text(line,pdf.ml+labelW,pdf.y);
-            pdf.y-=13;
+            pdf.text(line,pdf.ml+labelW,pdf.y);pdf.y-=13;
           });
         });
         pdf.y-=4;
       }
     }
-
     if(key==='projects'){
       const list=(cv.projects||[]).filter(x=>hasText(x.name));
       if(list.length){
@@ -1501,7 +1589,6 @@ function renderCVToPDF(cv){
         pdf.y-=4;
       }
     }
-
     if(key==='certifications'){
       const list=(cv.certifications||[]).filter(c=>hasText(c.name));
       if(list.length){
@@ -1513,19 +1600,14 @@ function renderCVToPDF(cv){
           const lines=wrapText(line,'F1',9.5,contentW-12,M);
           lines.forEach((l,i)=>{
             ensure(13);
-            if(i===0){
-              pdf.setFont('F2',9.5);pdf.setColor(accent);
-              pdf.text('\u2022',pdf.ml+1,pdf.y);
-            }
+            if(i===0){pdf.setFont('F2',9.5);pdf.setColor(accent);pdf.text('\u2022',pdf.ml+1,pdf.y);}
             pdf.setFont('F1',9.5);pdf.setColor(dark);
-            pdf.text(l,pdf.ml+12,pdf.y);
-            pdf.y-=13;
+            pdf.text(l,pdf.ml+12,pdf.y);pdf.y-=13;
           });
         });
         pdf.y-=4;
       }
     }
-
     if(key==='achievements'){
       const list=(cv.achievements||[]).filter(a=>hasText(a.title));
       if(list.length){
@@ -1538,19 +1620,14 @@ function renderCVToPDF(cv){
           const lines=wrapText(line,'F1',9.5,contentW-12,M);
           lines.forEach((l,i)=>{
             ensure(13);
-            if(i===0){
-              pdf.setFont('F2',9.5);pdf.setColor(accent);
-              pdf.text('\u2022',pdf.ml+1,pdf.y);
-            }
+            if(i===0){pdf.setFont('F2',9.5);pdf.setColor(accent);pdf.text('\u2022',pdf.ml+1,pdf.y);}
             pdf.setFont('F1',9.5);pdf.setColor(dark);
-            pdf.text(l,pdf.ml+12,pdf.y);
-            pdf.y-=13;
+            pdf.text(l,pdf.ml+12,pdf.y);pdf.y-=13;
           });
         });
         pdf.y-=4;
       }
     }
-
     if(key==='languages'){
       const list=(cv.languages||[]).filter(l=>hasText(l.language));
       if(list.length){
@@ -1559,22 +1636,17 @@ function renderCVToPDF(cv){
         pdf.y-=4;
       }
     }
-
     if(key==='references'){
       const r=cv.references||{};
       if(r.mode==='onrequest'){
-        heading('References');
-        para('Available upon request.',9.5,dark);
-        pdf.y-=4;
+        heading('References');para('Available upon request.',9.5,dark);pdf.y-=4;
       }else{
         const list=(r.list||[]).filter(x=>hasText(x.name));
         if(list.length){
           heading('References');
           list.forEach(x=>{
             ensure(30);
-            pdf.setFont('F2',9.5);pdf.setColor(black);
-            pdf.text(x.name,pdf.ml,pdf.y);
-            pdf.y-=13;
+            pdf.setFont('F2',9.5);pdf.setColor(black);pdf.text(x.name,pdf.ml,pdf.y);pdf.y-=13;
             const sub=[x.title,x.company].filter(hasText).join(', ');
             if(sub)para(sub,9.5,dark);
             const c=[x.email,x.phone].filter(hasText).join(' · ');
@@ -1585,13 +1657,9 @@ function renderCVToPDF(cv){
         }
       }
     }
-
     if(key==='additional'){
       const a=cv.additional||{};
-      const rows=[
-        ['Volunteer Experience',a.volunteer],['Publications',a.publications],['Awards',a.awards],
-        ['Professional Memberships',a.memberships],['Interests',a.interests]
-      ].filter(r=>hasText(r[1]));
+      const rows=[['Volunteer Experience',a.volunteer],['Publications',a.publications],['Awards',a.awards],['Professional Memberships',a.memberships],['Interests',a.interests]].filter(r=>hasText(r[1]));
       if(rows.length){
         heading('Additional Information');
         rows.forEach(r=>{
@@ -1600,24 +1668,17 @@ function renderCVToPDF(cv){
           const lines=wrapText(r[1],'F1',9.5,contentW-labelW,M);
           lines.forEach((line,i)=>{
             ensure(13);
-            if(i===0){
-              pdf.setFont('F2',9.5);pdf.setColor(black);
-              pdf.text(label,pdf.ml,pdf.y);
-            }
+            if(i===0){pdf.setFont('F2',9.5);pdf.setColor(black);pdf.text(label,pdf.ml,pdf.y);}
             pdf.setFont('F1',9.5);pdf.setColor(dark);
-            pdf.text(line,pdf.ml+labelW,pdf.y);
-            pdf.y-=13;
+            pdf.text(line,pdf.ml+labelW,pdf.y);pdf.y-=13;
           });
           pdf.y-=2;
         });
       }
     }
   });
-
   return pdf;
 }
-
-/* Export real PDF */
 function exportPDF(cv){
   if(!cv){toast('No CV to export.');return;}
   try{
@@ -1630,17 +1691,12 @@ function exportPDF(cv){
     toast('PDF generation failed: '+(e.message||'unknown error'));
   }
 }
-
-/* Print (fallback) */
 function printCV(cv){
   const root=byId('printRoot');
   root.innerHTML=renderCV(cv);
   const prev=document.title;
   document.title=fileBase(cv);
-  setTimeout(()=>{
-    window.print();
-    setTimeout(()=>{document.title=prev;root.innerHTML='';},800);
-  },60);
+  setTimeout(()=>{window.print();setTimeout(()=>{document.title=prev;root.innerHTML='';},800);},60);
 }
 
 /* ============================================================
@@ -1703,24 +1759,31 @@ function buildDocx(cv){
   const order=(cv.sectionOrder&&cv.sectionOrder.length)?cv.sectionOrder:SECTION_DEFS.map(s=>s.key);
   const hidden=cv.hiddenSections||[];
   let body='';
-
   body+=docxPara(docxRun(p.fullName||'Your Name',{b:true,sz:40,color:'111111'}),docxSpacing(0,30));
   if(hasText(p.title))body+=docxPara(docxRun(p.title,{sz:24,color:accent,b:true}),docxSpacing(0,60));
-
   const cItems=[p.email,p.phone,p.location,p.linkedin,p.github,p.portfolio].filter(hasText).map(shortUrl);
   if(cItems.length)body+=docxPara(docxRun(cItems.join('  |  '),{sz:19,color:'475569'}),docxSpacing(0,160));
-
   function renderText(t){
     const lines=String(t||'').split(/\n+/).map(l=>l.replace(/^[\s•\-*]+/,'').trim()).filter(Boolean);
     let out='';lines.forEach(l=>{out+=docxBullet(l);});return out;
   }
-
+  function docxResultsTable(resultObj){
+    const subjects=(resultObj.subjects||[]).filter(s=>hasText(s.subject)||hasText(s.grade));
+    if(!subjects.length)return'';
+    let out='';
+    subjects.forEach(s=>{
+      const sub=s.subject||'';const gr=s.grade||'';
+      out+=docxPara(
+        docxRun(sub,{sz:20,color:'334155'})+
+        (gr?docxRun('   —   ',{sz:20,color:'94A3B8'})+docxRun(gr,{b:true,sz:20,color:'0F172A'}):''),
+        docxSpacing(0,30)+'<w:ind w:left="340"/>'
+      );
+    });
+    return out;
+  }
   order.forEach(key=>{
     if(hidden.indexOf(key)!==-1)return;
-    if(key==='summary'&&hasText(cv.summary)){
-      body+=docxHeading('Professional Summary',accent);
-      body+=docxPara(docxRun(cv.summary,{sz:20}),docxSpacing(0,80));
-    }
+    if(key==='summary'&&hasText(cv.summary)){body+=docxHeading('Professional Summary',accent);body+=docxPara(docxRun(cv.summary,{sz:20}),docxSpacing(0,80));}
     if(key==='experience'){
       const list=(cv.experience||[]).filter(e=>hasText(e.title)||hasText(e.company));
       if(list.length){
@@ -1751,6 +1814,38 @@ function buildDocx(cv){
           if(hasText(e.gpa))body+=docxBullet('GPA: '+e.gpa);
           if(hasText(e.coursework))body+=docxBullet('Relevant Coursework: '+e.coursework);
           if(hasText(e.achievements))body+=renderText(e.achievements);
+        });
+      }
+    }
+    if(key==='gceAl'){
+      const g=cv.gceAl||{};
+      const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+      if(hasData){
+        body+=docxHeading('GCE Advanced Level (A/L)',accent);
+        if(hasText(g.year))body+=docxPara(docxRun('Year: '+g.year,{sz:20,color:'475569'}),docxSpacing(0,50));
+        body+=docxResultsTable(g);
+      }
+    }
+    if(key==='gceOl'){
+      const g=cv.gceOl||{};
+      const hasData=hasText(g.year)||(g.subjects||[]).some(s=>hasText(s.subject));
+      if(hasData){
+        body+=docxHeading('GCE Ordinary Level (O/L)',accent);
+        if(hasText(g.year))body+=docxPara(docxRun('Year: '+g.year,{sz:20,color:'475569'}),docxSpacing(0,50));
+        body+=docxResultsTable(g);
+      }
+    }
+    if(key==='schools'){
+      const list=(cv.schools||[]).filter(s=>hasText(s.name));
+      if(list.length){
+        body+=docxHeading('School Education',accent);
+        list.forEach(s=>{
+          const d=range(s.start,s.end,false);
+          let runs=docxRun(s.name,{b:true,sz:21});
+          if(hasText(s.location))runs+=docxRun('   '+s.location,{sz:20,color:'475569'});
+          if(d)runs+=docxRun('   '+d,{sz:18,i:true,color:'64748B'});
+          body+=docxPara(runs,docxSpacing(100,30));
+          if(hasText(s.description))body+=docxPara(docxRun(s.description,{sz:20}),docxSpacing(0,40));
         });
       }
     }
@@ -1839,10 +1934,8 @@ function buildDocx(cv){
       }
     }
   });
-
   const sectPr='<w:sectPr><w:pgSz w:w="11906" w:h="16838"/>'+
     '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>';
-
   return'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
     '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '+
     'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
@@ -1883,7 +1976,7 @@ function exportDocx(cv){
 }
 
 /* ============================================================
-   ZIP READER for DOCX extraction
+   ZIP READER
    ============================================================ */
 async function readZip(buffer){
   const dv=new DataView(buffer);let eocd=-1;
@@ -2113,7 +2206,19 @@ function saveCurrentCV(){
   persistCVs();
 }
 const saveCurrentCVDebounced=debounce(saveCurrentCV,500);
-
+function normalizeCV(cv){
+  cv.sectionOrder=cv.sectionOrder&&cv.sectionOrder.length?cv.sectionOrder:SECTION_DEFS.map(s=>s.key);
+  cv.hiddenSections=cv.hiddenSections||[];
+  cv.skills=Object.assign({technical:[],soft:[],tools:[],programming:[],frameworks:[],databases:[],spoken:[]},cv.skills||{});
+  cv.references=Object.assign({mode:'onrequest',list:[]},cv.references||{});
+  cv.additional=Object.assign({volunteer:'',publications:'',awards:'',memberships:'',interests:''},cv.additional||{});
+  cv.gceAl=Object.assign({year:'',subjects:[]},cv.gceAl||{});
+  cv.gceOl=Object.assign({year:'',subjects:[]},cv.gceOl||{});
+  cv.gceAl.subjects=Array.isArray(cv.gceAl.subjects)?cv.gceAl.subjects:[];
+  cv.gceOl.subjects=Array.isArray(cv.gceOl.subjects)?cv.gceOl.subjects:[];
+  cv.schools=Array.isArray(cv.schools)?cv.schools:[];
+  return cv;
+}
 function cvCompletion(cv){
   const items=[];const p=cv.personal||{};
   items.push({label:'Personal Information',ok:hasText(p.fullName)&&hasText(p.email)&&hasText(p.phone)});
@@ -2184,7 +2289,7 @@ function onboarding(){
     '<div class="modal-body">'+
     '<div class="field"><label>What job are you applying for?</label>'+
     '<div class="search-wrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>'+
-    '<input class="input" id="obJob" placeholder="Search e.g. Software, Nurse, Accountant…" autocomplete="off"></div>'+
+    '<input class="input" id="obJob" placeholder="Search e.g. Software, Nurse, Chef, Pilot…" autocomplete="off"></div>'+
     '<div class="hint" id="obHint">Start typing to see matching job titles.</div></div>'+
     '<div id="obResults" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:9px;display:none"></div>'+
     '<div id="obSelected" style="display:none;margin-top:12px"></div>'+
@@ -2291,14 +2396,12 @@ function createCVFlow(){
 function greeting(){const h=new Date().getHours();if(h<12)return'Good morning';if(h<18)return'Good afternoon';return'Good evening';}
 function scoreColor(n){if(n>=80)return'var(--success)';if(n>=60)return'var(--warn)';return'var(--danger)';}
 function scoreClass(n){if(n>=80)return'green';if(n>=60)return'amber';return'';}
-
 function renderDashboard(){
   const el=byId('view-dashboard');
   const cvs=state.cvs;
   const latest=cvs.slice().sort((a,b)=>b.updated-a.updated)[0];
   let avgScore=0;
   if(cvs.length)avgScore=Math.round(cvs.reduce((s,c)=>s+analyzeCV(c,c.targetJob).overall,0)/cvs.length);
-
   let html='<h1 class="view-title">'+greeting()+', '+esc((state.user.name||'').split(' ')[0])+'</h1>';
   html+='<p class="view-sub">Here is an overview of your CV workspace.</p>';
   html+='<div class="stat-grid">';
@@ -2308,19 +2411,16 @@ function renderDashboard(){
   html+='<div class="stat"><div class="stat-ic ic-amber"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="stat-label">Avg. ATS Score</div><div class="stat-value" style="color:'+scoreColor(avgScore)+'">'+(cvs.length?avgScore:'—')+'</div><div class="stat-foot">Across '+cvs.length+' CV'+(cvs.length===1?'':'s')+'</div></div>';
   html+='<div class="stat"><div class="stat-ic ic-gray"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="stat-label">Target Role</div><div class="stat-value" style="font-size:15px;line-height:1.3;margin-top:3px">'+esc(latest&&latest.targetJob?latest.targetJob:'—')+'</div><div class="stat-foot">'+esc(latest?(latest.category||'General'):'Not set')+'</div></div>';
   html+='</div>';
-
   if(!cvs.length){
     html+='<div class="empty"><div class="empty-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div><h3>Build your first professional CV</h3><p>Enter your details once and get a polished, ATS-friendly document you can download as PDF or DOCX.</p><button class="btn btn-primary btn-lg" id="dashNew">+ Create New CV</button></div>';
     el.innerHTML=html;
     byId('dashNew').onclick=createCVFlow;
     return;
   }
-
   html+='<div class="sec-head"><h3>Recent CV</h3><span class="muted">Last edited '+timeAgo(latest.updated)+'</span></div>';
   html+='<div class="cv-card" style="margin-bottom:26px"><div class="cv-card-top"><div class="cv-thumb"><div></div></div><div style="flex:1;min-width:0"><h4>'+esc(latest.name)+'</h4><div class="sub">'+esc(latest.targetJob||'No target role')+' · '+esc((TEMPLATES.find(t=>t.id===latest.template)||{}).name||'')+'</div></div></div>';
   html+='<div><div class="row-between" style="margin-bottom:6px"><span class="muted" style="font-size:12px">Completion</span><b style="font-size:12px">'+comp.pct+'%</b></div><div class="progress '+scoreClass(comp.pct)+'"><i style="width:'+comp.pct+'%"></i></div></div>';
   html+='<div class="actions"><button class="btn btn-primary btn-sm" data-act="edit" data-id="'+latest.id+'">Edit</button><button class="btn btn-secondary btn-sm" data-act="preview" data-id="'+latest.id+'">Preview</button><button class="btn btn-secondary btn-sm" data-act="download" data-id="'+latest.id+'">Download</button><button class="btn btn-ghost btn-sm" data-act="duplicate" data-id="'+latest.id+'">Duplicate</button></div></div>';
-
   html+='<div class="sec-head"><h3>Completion Checklist</h3></div><div class="card card-pad" style="margin-bottom:26px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">';
   comp.items.forEach(i=>{
     html+='<div style="display:flex;gap:9px;align-items:center;font-size:13px">'+(i.ok?'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.5"/></svg>')+'<span style="color:'+(i.ok?'var(--text)':'var(--text-2)')+'">'+esc(i.label)+'</span></div>';
@@ -2361,11 +2461,7 @@ function wireCVCardActions(scope){
 }
 function openCV(id){
   const cv=state.cvs.find(c=>c.id===id);if(!cv)return;
-  cv.sectionOrder=cv.sectionOrder&&cv.sectionOrder.length?cv.sectionOrder:SECTION_DEFS.map(s=>s.key);
-  cv.hiddenSections=cv.hiddenSections||[];
-  cv.skills=Object.assign({technical:[],soft:[],tools:[],programming:[],frameworks:[],databases:[],spoken:[]},cv.skills||{});
-  cv.references=Object.assign({mode:'onrequest',list:[]},cv.references||{});
-  cv.additional=Object.assign({volunteer:'',publications:'',awards:'',memberships:'',interests:''},cv.additional||{});
+  normalizeCV(cv);
   state.cv=cv;state.step=0;navigate('builder');
 }
 function duplicateCV(id){
@@ -2470,7 +2566,7 @@ function renderSteps(){
     let done=false;
     if(key==='personal')done=hasText(cv.personal.fullName)&&hasText(cv.personal.email);
     else if(key==='summary')done=hasText(cv.summary);
-    else if(key==='education')done=(cv.education||[]).length>0;
+    else if(key==='education')done=(cv.education||[]).length>0||(cv.gceAl.subjects||[]).some(s=>hasText(s.subject))||(cv.gceOl.subjects||[]).some(s=>hasText(s.subject))||(cv.schools||[]).some(s=>hasText(s.name));
     else if(key==='experience')done=(cv.experience||[]).length>0;
     else if(key==='projects')done=(cv.projects||[]).length>0;
     else if(key==='skills')done=(cv.skills.technical||[]).length+(cv.skills.soft||[]).length>0;
@@ -2509,6 +2605,36 @@ function aiBar(target){
     '<button class="btn btn-secondary btn-xs" data-ai="concise" data-target="'+target+'">Make Concise</button>'+
     '<button class="btn btn-secondary btn-xs" data-ai="verbs" data-target="'+target+'">Add Action Verbs</button></div>';
 }
+
+/* Render result entry rows for GCE O/L, A/L */
+function renderResultBlock(which,resultObj,title,badgeText){
+  const listId=which+'.subjects';
+  let h='<div class="edu-block">';
+  h+='<div class="edu-block-title">'+esc(title)+'<span class="edu-badge optional">Optional</span></div>';
+  h+='<div class="field"><label>Year of Examination</label><input class="input" data-bind="'+which+'.year" value="'+esc(resultObj.year||'')+'" placeholder="e.g. 2023"></div>';
+  const subjects=resultObj.subjects||[];
+  if(subjects.length){
+    h+='<div class="result-header"><span>Subject</span><span>Grade</span><span></span></div>';
+    subjects.forEach((s,i)=>{
+      h+='<div class="result-row">'+
+        '<input class="input" data-list="'+listId+'" data-idx="'+i+'" data-field="subject" value="'+esc(s.subject||'')+'" placeholder="e.g. Combined Mathematics" list="'+which+'-subjects">'+
+        '<select class="select" data-list="'+listId+'" data-idx="'+i+'" data-field="grade">'+
+        '<option value="">Grade</option>'+GCE_GRADES.map(g=>'<option'+(s.grade===g?' selected':'')+'>'+g+'</option>').join('')+
+        '</select>'+
+        '<button class="btn-remove" data-remove-result="'+which+'" data-idx="'+i+'" title="Remove">×</button>'+
+        '</div>';
+    });
+    // datalist for autocomplete
+    const suggestions=(which==='gceAl')?AL_SUBJECTS:OL_SUBJECTS;
+    h+='<datalist id="'+which+'-subjects">'+suggestions.map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>';
+  }else{
+    h+='<div class="hint" style="margin-bottom:10px">No subjects added yet. Click below to add your subjects and grades.</div>';
+  }
+  h+='<button class="btn btn-secondary btn-sm" data-add-result="'+which+'" style="margin-top:6px">+ Add Subject</button>';
+  h+='</div>';
+  return h;
+}
+
 function renderStep(){
   const cv=state.cv;
   const body=byId('stepBody');
@@ -2564,11 +2690,16 @@ function renderStep(){
     return;
   }
 
+  /* ---------- EDUCATION STEP (with GCE O/L, A/L, School) ---------- */
   if(key==='education'){
-    let h='<div class="step-head"><h3>Education</h3><p>List your most recent qualification first.</p></div>';
+    let h='<div class="step-head"><h3>Education</h3><p>Add your university education, GCE A/L and O/L results, and school details. Leave any section empty to skip it.</p></div>';
+
+    /* Universities */
+    h+='<div class="edu-block">';
+    h+='<div class="edu-block-title">Universities &amp; Colleges</div>';
     if(!cv.education.length)cv.education.push(blankEducation());
     cv.education.forEach((e,i)=>{
-      h+='<div class="entry"><div class="entry-head"><strong>Education '+(i+1)+'</strong><div class="entry-tools">'+
+      h+='<div class="entry" style="margin-bottom:12px"><div class="entry-head"><strong>Education '+(i+1)+'</strong><div class="entry-tools">'+
         (i>0?'<button class="btn btn-ghost btn-xs" data-move="education" data-idx="'+i+'" data-dir="-1">↑</button>':'')+
         (i<cv.education.length-1?'<button class="btn btn-ghost btn-xs" data-move="education" data-idx="'+i+'" data-dir="1">↓</button>':'')+
         '<button class="btn btn-ghost btn-xs" data-remove="education" data-idx="'+i+'" style="color:var(--danger)">Remove</button></div></div>'+
@@ -2579,7 +2710,34 @@ function renderStep(){
         listField('Achievements','education',i,'achievements',e.achievements,{type:'textarea',h:70,placeholder:"Dean's List 2023 (one per line)"})+
         '</div>';
     });
-    h+='<button class="btn btn-secondary btn-block" data-add="education">+ Add Education</button>';
+    h+='<button class="btn btn-secondary btn-block" data-add="education">+ Add University / College</button>';
+    h+='</div>';
+
+    /* GCE A/L */
+    h+=renderResultBlock('gceAl',cv.gceAl,'GCE Advanced Level (A/L)','Optional');
+
+    /* GCE O/L */
+    h+=renderResultBlock('gceOl',cv.gceOl,'GCE Ordinary Level (O/L)','Optional');
+
+    /* School Education */
+    h+='<div class="edu-block">';
+    h+='<div class="edu-block-title">School Education<span class="edu-badge optional">Optional</span></div>';
+    if(!cv.schools.length){
+      h+='<div class="hint" style="margin-bottom:10px">Add your primary or secondary school. Only include if relevant to the role.</div>';
+    }else{
+      cv.schools.forEach((s,i)=>{
+        h+='<div class="entry" style="margin-bottom:12px"><div class="entry-head"><strong>School '+(i+1)+'</strong><div class="entry-tools">'+
+          '<button class="btn btn-ghost btn-xs" data-remove="schools" data-idx="'+i+'" style="color:var(--danger)">Remove</button></div></div>'+
+          listField('School Name','schools',i,'name',s.name,{placeholder:'Royal College, Colombo'})+
+          listField('Location','schools',i,'location',s.location,{placeholder:'Colombo, Sri Lanka'})+
+          '<div class="grid2">'+listField('Start Year','schools',i,'start',s.start,{placeholder:'2010'})+listField('End Year','schools',i,'end',s.end,{placeholder:'2020'})+'</div>'+
+          listField('Description / Achievements','schools',i,'description',s.description,{type:'textarea',h:70,placeholder:'Prefect, Head of Science Society, First place in school science fair (one per line)'})+
+          '</div>';
+      });
+    }
+    h+='<button class="btn btn-secondary btn-block" data-add="schools">+ Add School</button>';
+    h+='</div>';
+
     body.innerHTML=h;
     return;
   }
@@ -2834,7 +2992,11 @@ document.addEventListener('input',function(e){
     saveCurrentCVDebounced();updatePreview();renderSteps();
   }else if(t.dataset.list){
     const list=t.dataset.list;const idx=Number(t.dataset.idx);const fieldName=t.dataset.field;
-    let arr;if(list==='references.list')arr=state.cv.references.list;else arr=state.cv[list];
+    let arr;
+    if(list==='references.list')arr=state.cv.references.list;
+    else if(list==='gceAl.subjects')arr=state.cv.gceAl.subjects;
+    else if(list==='gceOl.subjects')arr=state.cv.gceOl.subjects;
+    else arr=state.cv[list];
     if(!arr||!arr[idx])return;
     arr[idx][fieldName]=(t.type==='checkbox')?t.checked:t.value;
     saveCurrentCVDebounced();updatePreview();renderSteps();
@@ -2844,7 +3006,11 @@ document.addEventListener('change',function(e){
   const t=e.target;
   if(t.dataset&&t.dataset.list&&t.tagName==='SELECT'){
     const list=t.dataset.list,idx=Number(t.dataset.idx);
-    let arr=(list==='references.list')?state.cv.references.list:state.cv[list];
+    let arr;
+    if(list==='references.list')arr=state.cv.references.list;
+    else if(list==='gceAl.subjects')arr=state.cv.gceAl.subjects;
+    else if(list==='gceOl.subjects')arr=state.cv.gceOl.subjects;
+    else arr=state.cv[list];
     if(arr&&arr[idx]){arr[idx][t.dataset.field]=t.value;saveCurrentCVDebounced();updatePreview();}
   }
 });
@@ -2852,11 +3018,31 @@ document.addEventListener('click',function(e){
   const add=e.target.closest('[data-add]');
   if(add){
     const list=add.dataset.add;
-    const factory={education:blankEducation,experience:blankExperience,projects:blankProject,certifications:blankCert,achievements:blankAchv,languages:blankLang,'references.list':blankRef}[list];
+    const factory={education:blankEducation,experience:blankExperience,projects:blankProject,certifications:blankCert,achievements:blankAchv,languages:blankLang,schools:blankSchool,'references.list':blankRef}[list];
     if(list==='references.list')state.cv.references.list.push(blankRef());
     else state.cv[list].push(factory());
     saveCurrentCVDebounced();renderStep();updatePreview();renderSteps();
     const body=byId('stepBody');body.scrollTop=body.scrollHeight;
+    return;
+  }
+  /* Add result subject */
+  const addResult=e.target.closest('[data-add-result]');
+  if(addResult){
+    const which=addResult.dataset.addResult;
+    state.cv[which].subjects=state.cv[which].subjects||[];
+    state.cv[which].subjects.push(blankResult());
+    saveCurrentCVDebounced();renderStep();updatePreview();
+    const body=byId('stepBody');
+    setTimeout(()=>{body.scrollTop=body.scrollHeight;},10);
+    return;
+  }
+  /* Remove result subject */
+  const rmResult=e.target.closest('[data-remove-result]');
+  if(rmResult){
+    const which=rmResult.dataset.removeResult;
+    const idx=Number(rmResult.dataset.idx);
+    state.cv[which].subjects.splice(idx,1);
+    saveCurrentCVDebounced();renderStep();updatePreview();
     return;
   }
   const rm=e.target.closest('[data-remove]');
@@ -2962,7 +3148,7 @@ function downloadCenter(cv){
       byId('authScreen').style.display='none';
       byId('app').classList.add('on');
       state.user={name:'Shared CV',email:'read-only view',id:'shared'};
-      updateUserUI();state.cv=cv;state.cvs=[cv];navigate('builder');
+      updateUserUI();state.cv=normalizeCV(cv);state.cvs=[state.cv];navigate('builder');
       toast('Viewing a shared CV in read-only preview mode.');
       history.replaceState(null,'',location.pathname);
     },100);
@@ -3085,7 +3271,6 @@ function runAnalysis(text,jobTitle){
 }
 function renderAnalysisResult(r){
   const box=byId('anResults');
-  const deg=Math.round((r.overall/100)*360);
   const color=r.overall>=80?'#12b76a':r.overall>=60?'#f79009':'#f04438';
   let h='<div class="score-hero"><div class="ring"><svg width="132" height="132"><circle cx="66" cy="66" r="56" fill="none" stroke="#eef0f4" stroke-width="12"/><circle cx="66" cy="66" r="56" fill="none" stroke="'+color+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+(2*Math.PI*56)+'" stroke-dashoffset="'+(2*Math.PI*56*(1-r.overall/100))+'"/></svg><div class="ring-val"><b style="color:'+color+'">'+r.overall+'</b><span>ATS Score</span></div></div>'+
     '<div><h3 style="font-size:18px;margin-bottom:6px">ATS Compatibility Report</h3><p style="font-size:13.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px">Analysis against <strong>'+esc(r.jobTitle||'your target role')+'</strong>. This is a diagnostic to help you improve your CV — it is not a guarantee of ATS acceptance or of any employment outcome.</p>'+
